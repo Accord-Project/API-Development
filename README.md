@@ -5,7 +5,7 @@ We have initially developed a list of API that we must explore. Below we will co
     - Here we should re-use the BSDD API https://app.swaggerhub.com/apis/buildingSMART/Dictionaries/v1
 
 3. **Rules** – Communicating rules from GraphDB to other components
-    - API Developed by Tom Previously:
+    - API Developed by Tom Previously: https://d-com-network.github.io/DCOMDocumentation/resources/compliancedocumentserver/ or [here](compliancedocumentserver.json)
     - Future insight API:
 
 4. **Information Services** – microservices accessing information from information services
@@ -20,5 +20,5 @@ We have initially developed a list of API that we must explore. Below we will co
     - Netflix have some open source offerings https://github.com/Netflix/conductor and https://github.com/Netflix/eureka
 
 9. **Reports/Feedback** – triggering and getting feedback from microservices
-    - Tom previous work:
+    - Tom previous work: https://d-com-network.github.io/DCOMDocumentation/resources/resultserver/ [json](resultservice.json) and https://d-com-network.github.io/DCOMDocumentation/resources/ruleengineinterface/ [json](ruleengineinterface.json) 
     - Future Insight Previous work
