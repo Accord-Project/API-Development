@@ -1,0 +1,491 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "DCOM Rule Engine Interface API",
+    "description": "This is the API that should be implemented by a software service to allow a DCOM Rule Engine to connect to it.\nversion: '1.0.0'"
+  },
+  "basePath": "dcom/v1/",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json",
+    "application/xml"
+  ],
+  "produces": [
+    "application/json",
+    "application/xml"
+  ],
+  "securityDefinitions": {
+    "auth": {
+      "name": "Authorization",
+      "type": "bearer",
+      "description": "A bearer token to identify the connecting service as an authorizied DCOM accredited rule engine",
+      "in": "header"
+    }
+  },
+  "paths": {
+    "/v1/": {
+      "get": {
+        "summary": "Retrieves the basic metadata about the data source component",
+        "description": "Retrieves the basic metadata about the data source component",
+        "operationId": "GET--v1",
+        "responses": {
+          "200": {
+            "description": "Returns basic metadata about the data source component. Equivalent XML Response is returned if content type is set appropriately.",
+            "schema": {
+              "$ref": "#/definitions/Identity"
+            }
+          }
+        }
+      },
+    },
+    "/v1/{complianceCheckUID}/data": {
+      "get": {
+        "summary": "Enables the retrieval of an item or set of data from the implementing service",
+        "description": "Enables the retrieval of an item or set of data from the implementing service",
+        "operationId": "GET--v1--complianceCheckUID--data",
+        "responses": {
+          "200": {
+            "description": "Returns the set of data that has been requested",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "array",
+                  "description":"A set of data, returned in the same order as the ids specified in the id query parameter",
+                  "items": {
+                    "type": "string"
+                  },
+                 }, 
+                  "jobId":{
+                    "description":"A Job ID representing the fact the service cannot reply in a timely manor and the rule engine should contact it later for a response.",
+                    "type":"string"
+                  }
+              },
+              "required": [
+              ]
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "complianceCheckUID",
+            "description": "The unique id of the compliance check being conducted",
+            "type": "string",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "id",
+            "type": "string",
+            "description":"The IDs to retrieve data about",
+            "in": "query"
+          },
+          {
+            "name": "propertyName",
+            "description":"The name of the property that we wish to retrieve",
+            "type": "string",
+            "in": "query",
+            "required": true
+          },
+          {
+            "name": "unit",
+            "type": "string",
+            "description":"The unit of the property we wish to retrieve",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "complianceDocumentReference",
+            "description":"A reference to the element in a compliance document the request is related to",
+            "type": "string",
+            "in": "query",
+            "required": false
+          }
+        ]
+      }
+    },
+    "/v1/{complianceCheckUID}/retrieveAnswerJob/{jobId}": {
+      "get": {
+        "summary": "Enables the retrieval of the answer to a question that could not be provided immediately",
+        "description": "Enables the retrieval of the answer to a question that could not be provided immediately",
+        "operationId": "GET--v1--complianceCheckUID--retrieveAnswerJob",
+        "responses": {
+          "200": {
+            "description": "Returns the set of answers that have been requested",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "answers": {
+                  "description":"A set of answers submitted to the rule engine.",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Answer"
+                  }
+                }
+              },
+              "required": [
+                "answers"
+              ]
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "jobId",
+            "description": "The unique job id being requested",
+            "type": "string",
+            "in": "paths",
+            "required": true
+          },
+          {
+            "name": "id",
+            "type": "string",
+            "description":"The ID to retrieve data about",
+            "in": "query"
+          },
+        ]
+      }
+    },
+    "/v1/{complianceCheckUID}/retrieveDataJob/{jobId}": {
+      "get": {
+        "summary": "Enables the retrieval of the data to a question that could not be provided immediately",
+        "description": "Enables the retrieval of the data to a question that could not be provided immediately",
+        "operationId": "GET--v1--complianceCheckUID--retrieveDataJob",
+        "responses": {
+          "200": {
+            "description": "Returns the set of data that have been requested",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "array",
+                  "description":"A set of data, returned in the same order as the ids specified in the id query parameter",
+                  "items": {
+                    "type": "string"
+                  },
+                 }
+              },
+              "required": [
+                "answers"
+              ]
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "jobId",
+            "description": "The unique job id being requested",
+            "type": "string",
+            "in": "paths",
+            "required": true
+          },
+          {
+            "name": "id",
+            "type": "string",
+            "description":"The ID to retrieve data about",
+            "in": "query"
+          },
+        ]
+      }
+    },
+    "/v1/{complianceCheckUID}/answer": {
+      "get": {
+        "summary": "Enables the retrieval of the answer to a question (or a set of questions) from the implementing service",
+        "description": "Enables the retrieval of the answer to a question (or a set of questions) from the implementing service",
+        "operationId": "GET--v1--complianceCheckUID--answer",
+        "responses": {
+          "200": {
+            "description": "Returns the set of answers that have been requested",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "answers": {
+                  "description":"A set of answers submitted to the rule engine.",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Answer"
+                  }
+                }
+              },
+              "required": [
+                "answers"
+              ]
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "complianceCheckUID",
+            "description": "The unique id of the compliance check being conducted",
+            "type": "string",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "id",
+            "type": "string",
+            "description":"The set of IDs to retrieve data about.",
+            "in": "query"
+          },
+          {
+            "name": "propertyName",
+            "description":"The name of the property that we wish to retrieve",
+            "type": "string",
+            "in": "query",
+            "required": true
+          },
+          {
+            "name": "comparator",
+            "enum": [
+              "'='",
+              "'!='",
+              "'>'",
+              "'>='",
+              "'<'",
+              "'<='"
+            ],
+            "type": "string",
+            "description":"The comparator used to test against the property - defaults to = if absent",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "desiredAnswer",
+            "description":"The desired answer - defaults to true if absent",
+            "type": "string",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "unit",
+            "description":"The unit requested - defaults to unitless if absent",
+            "type": "string",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "complianceDocumentReference",
+            "description":"A reference to the element in a compliance document the request is related to",
+            "type": "string",
+            "in": "query",
+            "required": false
+          }
+        ]
+      }
+    },
+    "/v1/{complianceCheckUID}/": {
+      "get": {
+        "summary": "Enables the retrieval basic project information.",
+        "description": "Enables the retrieval of basic project information and the set of unique identifiers of entities known by the implementing services",
+        "operationId": "GET--v1--complianceCheckUID--IdSet",
+        "responses": {
+          "200": {
+            "description": "Returns the set of IDs that have been requested",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "projectName":{
+                  "type":"string",
+                  "description":"A human readable name for the project"
+                },
+                "ids": {
+                  "type": "array",
+                  "description":"The Set of IDs",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "ids"
+              ]
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "complianceCheckUID",
+            "description": "The unique id of the compliance check being conducted",
+            "type": "string",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "post": {
+        "summary": "Enables the submission of feedback from the rule engine to the implementing service.",
+        "description": "Enables the submission of feedback from the rule engine to the implementing service.",
+        "operationId": "POST--v1--complianceCheckUID--feedback",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "required": [
+                "success"
+              ],
+              "properties": {
+                "success": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "complianceCheckUID",
+            "description": "The unique id of the compliance check being conducted",
+            "type": "string",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/FeedbackModel"
+            },
+            "in": "body"
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Answer": {
+      "title": "An answers to questions posed by the rule engine",
+      "description": "Represents an answer to questions posed by the rule engine",
+      "type": "object",
+      "properties": {
+        "propertyId": {
+          "type": "string",
+          "description":"The id of the property being answered"
+        },
+        "id": {
+                "description":"The Entity ID to which this answer is relevant",
+                "type": "string"
+        },
+        "answer": {
+          "description":"The actual answer",
+          "enum": [
+            "true",
+            "false",
+            "unknown"
+          ]
+        },
+        "missValue":{
+          "description":"The optional miss value. This is an indication, if the answer is false, how far out of tolerance the value is.",
+          "type":"string"
+        },
+        "supportingFileData":{
+          "description":"The BASE64 Encoded File Data that supports/evidences this answer",
+          "type":"string"
+        },
+        "supportingFileContentType":{
+          "description":"The MIME Content Type of the Support file data (if present)",
+          "type":"string"
+        },
+        "jobId":{
+          "description":"A Job ID representing the fact the service cannot reply in a timely manor and the rule engine should contact it later for a response.",
+          "type":"string"
+        }
+      },
+      "required": [
+        "propertyId",
+        "id"
+      ]
+    },
+    "Identity": {
+      "title": "Represents the basic metadata of the data source",
+      "description": "Represents the basic metadata of the data source",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description":"The name of this data source"
+        },
+        "description": {
+          "type": "string",
+          "description":"The description of this data source"
+        },
+        "operator": {
+          "type": "string",
+          "description":"The name of the organisation operating this data source"
+        }
+      },
+      "required": [
+        "name",
+        "description",
+        "operator",
+        "securityServiceType",
+        "securityServiceURI"
+      ]
+    },
+    "FeedbackModel": {
+      "title": "Feedback items to be provided to the implementing service",
+      "description": "Feedback items to be provided to the implementing service",
+      "type": "object",
+      "properties": {
+        "complianceDocunentReference": {
+          "type": "string",
+          "description":"An ID refering to a clause within a compliance document against which feedback is given"
+        },
+        "answer": {
+          "type":"string",
+          "description":"The result that has been computed",
+          "enum": [
+            "true",
+            "false",
+            "unknown"
+          ]
+        },
+        "reasons": {
+          "type": "array",
+          "description":"A set of free text reasons for the given answer from the rule engine",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "answer",
+        "reasons"
+      ]
+    }
+  }
+}

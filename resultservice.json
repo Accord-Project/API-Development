@@ -1,0 +1,470 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "DCOM Result Service API",
+    "description": "This is the API for the Result Service\nversion: '1.0.0'\n Results are immutable, once they are placed into a result service by a rule engine they cannot be changed/deleted."
+  },
+  "host": "service.dcom.org.uk",
+  "basePath": "/api/",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json",
+    "application/xml"
+  ],
+  "produces": [
+    "application/json",
+    "application/xml"
+  ],
+  "securityDefinitions": {
+    "authService": {
+      "name": "Authorization",
+      "type": "bearer",
+      "description": "An bearer authorization token to prove the service is authorized to submit compliance results",
+      "in": "header"
+    },
+    "authUser": {
+      "name": "Authorization",
+      "type": "bearer",
+      "description": "An bearer authorization token to prove the user is authorized to access compliance results.  Acquired from the OATH2 Security Service related to this service.",
+      "in": "header"
+    }
+  },
+  "paths": {
+    "/v1/": {
+      "get": {
+        "summary": "Retrieves the basic metadata about the result server",
+        "description": "Retrieves the basic metadata about the result server",
+        "operationId": "GET--v1",
+        "responses": {
+          "200": {
+            "description": "Returns basic metadata about the Result Service. Equivalent XML Response is returned if content type is set appropriately.",
+            "schema": {
+                  "$ref": "#/definitions/ServerIdentity"
+
+            }
+          }
+        }
+      }
+    },
+    "/v1/{building}/all": {
+      "get": {
+        "summary": "Returns a list of all compliance results across all  compliance checks for a given building",
+        "description": "Returns a list of all compliance results across all compliance checks for a given building",
+        "operationId": "GET--v1--building--s---complianceCheckId--s",
+        "responses": {
+          "200": {
+            "description": "Returns a list of Compliance Results that the user is allowed to view. Equivalent XML Response is returned if content type is set appropriately.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/ComplianceResultDataItem"
+                  }
+                }
+              },
+              "required": [
+                "results"
+              ]
+            }
+          }
+        },
+        "security": [
+          {
+            "authUser": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "building",
+            "description":"The UPRN of the building being considered - as described <a href='https://www.ordnancesurvey.co.uk/business-government/products/open-uprn' target='_blank'>here</a>",
+            "type": "string",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "start",
+            "type": "string",
+            "format": "date-time",
+            "description":"The Start Date/Time to query",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "end",
+            "type": "string",
+            "description":"The End Date/Time to query",
+            "format": "date-time",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "documentFilter",
+            "description":"Filter based on the compliance document against which the compliance check was performed. This is free text - will will be matched against the document path provided within the result service i.e. AD_PartL2A/1 - for AD_PartL2A section 1",
+            "type": "string",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "search",
+            "type": "string",
+            "description":"A free text search field to search results",
+            "in": "query",
+            "required": false
+          }
+        ]
+      }
+      },
+    "/v1/{building}/": {
+      "get": {
+        "summary": "Returns a list of all compliance checks available for a given building ",
+        "description": "Returns a list of all compliance checks available for a given building ",
+        "operationId": "GET--v1--building--s---complianceCheckId--s",
+        "responses": {
+          "200": {
+            "description": "Returns a list of Compliance Checks that the user is allowed to view. Equivalent XML Response is returned if content type is set appropriately.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/ComplianceCheckItem"
+                  }
+                }
+              },
+              "required": [
+                "results"
+              ]
+            }
+          }
+        },
+        "security": [
+          {
+            "authUser": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "building",
+            "description":"The UPRN of the building being considered - as described <a href='https://www.ordnancesurvey.co.uk/business-government/products/open-uprn' target='_blank'>here</a>",
+            "type": "string",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "patch": {
+        "summary": "Submits an update to the buildings UPRN",
+        "description": "Submits an update to the buildings UPRN",
+        "operationId": "PATCH--v1--building--s---s",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "required": [
+                "success"
+              ],
+              "properties": {
+                "success": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "authUser": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "building",
+            "description":"The UPRN of the building being considered - as described <a href='https://www.ordnancesurvey.co.uk/business-government/products/open-uprn' target='_blank'>here</a>",
+            "type": "string",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "UPRN":{
+                    "type":"string",
+                    "description":"An updated UPRN to be used in place of the existing UPRN",
+                    "items":{
+                      "type":"string"
+                    }
+                }
+              },
+              "required": [
+                "body"
+              ]
+            },
+            "in": "body"
+          }
+        ]
+      }
+    },
+    "/v1/{building}/{complianceCheckUID}": {
+      "get": {
+        "summary": "Returns a list of all compliance results from a given compliance check for a given building",
+        "description": "Returns a list of all compliance results from a given compliance check for a given building",
+        "operationId": "GET--v1--building--s---complianceCheckId--s",
+        "responses": {
+          "200": {
+            "description": "Returns a list of Compliance Results that the user is allowed to view. Equivalent XML Response is returned if content type is set appropriately.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/ComplianceResultDataItem"
+                  }
+                }
+              },
+              "required": [
+                "results"
+              ]
+            }
+          }
+        },
+        "security": [
+          {
+            "authUser": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "building",
+            "description":"The UPRN of the building being considered - as described <a href='https://www.ordnancesurvey.co.uk/business-government/products/open-uprn' target='_blank'>here</a>",
+            "type": "string",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "complianceCheckUID",
+            "description":"The Unique ID of the compliance check being considered",
+            "type": "string",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "start",
+            "type": "string",
+            "description":"The Start Date/Time to query",
+            "format": "date-time",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "end",
+            "type": "string",
+            "description":"The End Date/Time to query",
+            "format": "date-time",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "search",
+            "type": "string",
+            "description":"A free text search field to search results",
+            "in": "query",
+            "required": false
+          }
+        ]
+      },
+      "put": {
+        "summary": "Submits new compliance results",
+        "description": "Submits new compliance results",
+        "operationId": "PUT--v1--building--s---complianceCheckId--s",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "required": [
+                "success"
+              ],
+              "properties": {
+                "success": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "authService": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "building",
+            "description":"The UPRN of the building being considered - as described <a href='https://www.ordnancesurvey.co.uk/business-government/products/open-uprn' target='_blank'>here</a>",
+            "type": "string",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "complianceCheckUID",
+            "description":"The Unique ID of the compliance check being considered",
+            "type": "string",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "conditions":{
+                    "type":"array",
+                    "description":"A an array of conditions set on the approval by building control",
+                    "items":{
+                      "type":"string"
+                    }
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/ComplianceResultDataItem"
+                  }
+                }
+              },
+              "required": [
+                "body"
+              ]
+            },
+            "in": "body"
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "ServerIdentity": {
+      "title": "Represents the basic metadata of the results serivce",
+      "description": "Represents the basic metadata of the results service",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+            "description":"The name of this result service"
+        },
+        "description": {
+          "type": "string",
+          "description":"A description of this result service"
+        },
+        "operator": {
+          "type": "string",
+          "description":"The name of the organisation operating this result service"
+        },
+        "securityServiceType": {
+          "type": "string",
+          "description":"The type of authorisation/authentication service used by this result service",
+        },
+        "securityServiceURI": {
+          "type": "string",
+          "description":"The URL of the OAUTH2 security service utilised by this result service",
+        }
+      },
+      "required": [
+        "name",
+        "description",
+        "operator",
+        "securityServiceType",
+        "securityServiceURI"
+      ]
+    },
+    "ComplianceCheckItem": {
+      "Name": "The list of compliance checks for this building",
+      "description": "Represents the lists of compliance checks for a given building",
+      "type": "object",
+      "properties": {
+        "complianceDocument": {
+          "type": "string",
+          "description":"The URI of the compliance document this compliance check has checked against"
+        },
+        "complianceCheckUID": {
+          "type": "string",
+          "description":"The UID of this compliance check"
+        },
+        "result":{
+            "type": "string",
+            "description":"The Final Result of this compliance check",
+            "enum": [
+              "true",
+              "false"
+            ]
+        },
+        "time": {
+          "type": "string",
+          "format":"date-time",
+          "description":"The date/time that this comliance check was generated"
+        }
+      },
+      "required": [
+        "complianceDocument",
+        "complianceCheckUID"
+      ]
+    },
+    "ComplianceResultDataItem": {
+      "Name": "The a result from a compliance check",
+      "description": "Represents an individual result from a compliance check",
+      "type": "object",
+      "properties": {
+        "reference": {
+          "type": "string",
+          "description":"The URI of the clause within a compliance document that this result is generated from"
+        },
+        "time": {
+          "type": "string",
+          "format":"date-time",
+          "description":"The date/time that this result was generated"
+        },
+        "reasons": {
+          "type": "array",
+          "description":"A set of reasons why this result has been computed this includes information on what data items have been used, what software tools produced this results, if the result was automatically or human generated etc...",
+          "items":{
+            "type":"string"
+          }
+        },
+        "attributation": {
+          "type": "string",
+          "description":"A string describing what/who generated this result"
+        },
+        "result":{
+          "description":"The result that has been computed",
+          "type":"string",
+          "enum": [
+            "true",
+            "false"
+          ]
+        },
+        "supportingFileData":{
+          "description":"The BASE64 Encoded File Data that supports/evidences this answer",
+          "type":"string"
+        },
+        "supportingFileContentType":{
+          "description":"The MIME Content Type of the Support file data (if present)",
+          "type":"string"
+        }
+      },
+      "required": [
+        "complianceDocument",
+        "complianceCheckUID"
+      ]
+    }
+  }
+}
