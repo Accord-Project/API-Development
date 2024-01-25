@@ -1,0 +1,1900 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="main.css">
+    <meta charset="UTF-8">
+    <title>DCOM Compliance Document Server API</title>
+                                                         </head>
+<body>
+<div class="container">
+    <h1>DCOM Compliance Document Server API</h1>
+    <p class="sw-info">
+        Base URL: <span class="sw-info-basePath">/api/v1/</span>,
+        Version: <span class="sw-info-version"></span>
+    </p>
+    <p><p>This is the API for the Compliance Document Server
+    version: &#39;1.0.0&#39;. It is important to note when reading this API that any given version of a compliance documents is immutable and once a specific version is published it cannot be changed. To update a document a new version must be created.</p>
+    </p>
+    
+        <div id="sw-default-consumes" class="sw-default-value">
+            <span class="sw-default-value-header">Default request content-types:</span>
+            application/json, application/xml
+        </div>
+        <div id="sw-default-produces" class="sw-default-value">
+            <span class="sw-default-value-header">Default response content-types:</span>
+            application/json, application/xml
+        </div>
+    
+    <div id="sw-schemes" class="sw-default-value">
+        <span class="sw-default-value-header">Schemes:</span>
+        https
+    </div>
+    
+        <h2 id="swagger--summary-no-tags">Summary</h2>
+        <table class="table table-bordered table-condensed swagger--summary">
+            <thead>
+            <tr>
+                <th>Path</th>
+                <th>Operation</th>
+                <th>Description</th>
+            </tr>
+            </thead>
+            <tbody>
+                    <tr>
+                            <td class="swagger--summary-path" rowspan="1">
+                                <a href="#path--v1-">/v1/</a>
+                            </td>
+                        <td>
+                            <a href="#operation--v1--get">GET</a>
+                        </td>
+                        <td>
+                            <p>Retrieves the basic metadata about the compliance document server</p>
+        
+                        </td>
+                    </tr>
+                    <tr>
+                            <td class="swagger--summary-path" rowspan="1">
+                                <a href="#path--v1--jurisdiction-">/v1/{jurisdiction}</a>
+                            </td>
+                        <td>
+                            <a href="#operation--v1--jurisdiction--get">GET</a>
+                        </td>
+                        <td>
+                            <p>Returns a list of all compliance documents covering the given jurisdiction</p>
+        
+                        </td>
+                    </tr>
+                    <tr>
+                            <td class="swagger--summary-path" rowspan="1">
+                                <a href="#path--v1--jurisdiction---type-">/v1/{jurisdiction}/{type}</a>
+                            </td>
+                        <td>
+                            <a href="#operation--v1--jurisdiction---type--get">GET</a>
+                        </td>
+                        <td>
+                            <p>Returns a list of all compliance documents of a given type covering the given jurisdiction</p>
+        
+                        </td>
+                    </tr>
+                    <tr>
+                            <td class="swagger--summary-path" rowspan="2">
+                                <a href="#path--v1--jurisdiction---type---shortName-">/v1/{jurisdiction}/{type}/{shortName}</a>
+                            </td>
+                        <td>
+                            <a href="#operation--v1--jurisdiction---type---shortName--get">GET</a>
+                        </td>
+                        <td>
+                            <p>Returns the latest version of a compliance document</p>
+        
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="#operation--v1--jurisdiction---type---shortName--put">PUT</a>
+                        </td>
+                        <td>
+                            <p>Creates a new compliance document</p>
+        
+                        </td>
+                    </tr>
+                    <tr>
+                            <td class="swagger--summary-path" rowspan="2">
+                                <a href="#path--v1--jurisdiction---type---shortName---version-">/v1/{jurisdiction}/{type}/{shortName}/{version}</a>
+                            </td>
+                        <td>
+                            <a href="#operation--v1--jurisdiction---type---shortName---version--get">GET</a>
+                        </td>
+                        <td>
+                            <p>Returns a specified version of a compliance document</p>
+        
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="#operation--v1--jurisdiction---type---shortName---version--put">PUT</a>
+                        </td>
+                        <td>
+                            <p>Updates a compliance document by creating a new version using the specified version name</p>
+        
+                        </td>
+                    </tr>
+                    <tr>
+                            <td class="swagger--summary-path" rowspan="2">
+                                <a href="#path--v1--jurisdiction---type---shortName---version---documentReference-">/v1/{jurisdiction}/{type}/{shortName}/{version}/{documentReference}</a>
+                            </td>
+                        <td>
+                            <a href="#operation--v1--jurisdiction---type---shortName---version---documentReference--get">GET</a>
+                        </td>
+                        <td>
+                            <p>Returns a specific section/paragraph of a compliance document</p>
+        
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="#operation--v1--jurisdiction---type---shortName---version---documentReference--put">PUT</a>
+                        </td>
+                        <td>
+                            <p>Updates a section/paragraph of a compliance document creating a new version using the specific version name</p>
+        
+                        </td>
+                    </tr>
+            </tbody>
+        </table>
+    
+    
+        <h2>Security</h2>
+    
+            <div id="security-definition-auth" class="panel panel-security-definition panel-security-definition-bearer">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><span class="security-name">auth</span></h3>
+                    Type: bearer
+                </div>
+                <div class="panel-body">                
+                    <section class="sw-security-properties">
+                        <dl>                
+                            <dt class="security-property-name">Description:</dt>
+                            <dd class="security-property-type">
+                                <div class="row">
+                                    <div class="col-md-12"><p><p>An bearer authorization token to prove the user is authorized to edit/create compliance documents. Acquired from the OATH2 Security Service related to this service.</p>
+    </p></div>
+                                </div>
+                            </dd>
+                        </dl>
+                    </section>                
+                </div>
+            </div>        
+    
+    <h2>Paths</h2>
+    
+        
+        <span id="path--v1-"></span>
+            <div id="operation--v1--get" class="swagger--panel-operation-get panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Retrieves the basic metadata about the compliance document server</div>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/v1/</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>Retrieves the basic metadata about the compliance document server</p>
+            
+                    </section>
+            
+                    
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> <span class="label label-default">application/xml</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Returns basic metadata about the Compliance Document Server. Equivalent XML Response is returned if content type is set appropriately.</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/ServerIdentity">ServerIdentity</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                </div>
+            </div>
+        
+        <span id="path--v1--jurisdiction-"></span>
+            <div id="operation--v1--jurisdiction--get" class="swagger--panel-operation-get panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Returns a list of all compliance documents covering the given jurisdiction</div>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/v1/{jurisdiction}</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>Returns a list of all compliance documents covering the given jurisdiction</p>
+            
+                    </section>
+            
+                    
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>
+                                                jurisdiction
+                                            </td>
+                                            <td><p>The geographical area the document is relevant to. Specified using terms from <a href='https://www.iso.org/obp/ui/#search/code/' target=_blank>ISO 3166-2</a></p>
+                                        </td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> <span class="label label-default">application/xml</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Returns a list of Compliance Documents. Equivalent XML Response is returned if content type is set appropriately.</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/ComplianceDocumentIndex">ComplianceDocumentIndex</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                </div>
+            </div>
+        
+        <span id="path--v1--jurisdiction---type-"></span>
+            <div id="operation--v1--jurisdiction---type--get" class="swagger--panel-operation-get panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Returns a list of all compliance documents of a given type covering the given jurisdiction</div>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/v1/{jurisdiction}/{type}</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>Returns a list of all compliance documents of a given type covering the given jurisdiction</p>
+            
+                    </section>
+            
+                    
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>
+                                                jurisdiction
+                                            </td>
+                                            <td><p>The geographical area the document is relevant to. Specified using terms from <a href='https://www.iso.org/obp/ui/#search/code/' target=_blank>ISO 3166-2</a></p>
+                                        </td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                type
+                                            </td>
+                                            <td><p>The type of the document as per the defined types in the Compliance Document <a href="https://docs.dcom.org.uk/compliancedocument">Specifications</a></p>
+                                        </td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">integer</span>    <span class="json-property-enum" title="Possible values">, x &isin; {
+                                                        <span class="json-property-enum-item">0</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">1</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">2</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">3</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">4</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">5</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">6</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">7</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">9</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">10</span>
+                                                    
+                                                }
+                                                </span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> <span class="label label-default">application/xml</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Returns a list of Compliance Documents. Equivalent XML Response is returned if content type is set appropriately.</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/ComplianceDocumentIndex">ComplianceDocumentIndex</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                </div>
+            </div>
+        
+        <span id="path--v1--jurisdiction---type---shortName-"></span>
+            <div id="operation--v1--jurisdiction---type---shortName--get" class="swagger--panel-operation-get panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Returns the latest version of a compliance document</div>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/v1/{jurisdiction}/{type}/{shortName}</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>Returns the latest version of a compliance document</p>
+            
+                    </section>
+            
+                    
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>
+                                                jurisdiction
+                                            </td>
+                                            <td><p>The geographical area the document is relevant to. Specified using terms from ISO 3166-2</p>
+                                        </td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                type
+                                            </td>
+                                            <td><p>The type of the document as per the defined types in the Compliance Document <a href="https://docs.dcom.org.uk/compliancedocument">Specifications</a></p>
+                                        </td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">integer</span>    <span class="json-property-enum" title="Possible values">, x &isin; {
+                                                        <span class="json-property-enum-item">0</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">1</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">2</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">3</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">4</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">5</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">6</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">7</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">9</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">10</span>
+                                                    
+                                                }
+                                                </span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                shortName
+                                            </td>
+                                            <td><p>The Short URL Friendly Title of the Compliance Document</p>
+                                        </td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                diff
+                                            </td>
+                                            <td><p>The version of the compliance document that should be compared with this one for changes</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                query
+                                            </td>
+                                            <td><p>Instruct the server to return either the full compliance document(full), or provide the outline structure with all content removed (structure)</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>    <span class="json-property-enum" title="Possible values">, x &isin; {
+                                                        <span class="json-property-enum-item">full,structure</span>
+                                                    
+                                                }
+                                                </span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> <span class="label label-default">application/xml</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Returns the  latest version of the compliance document identified by shortName of the given type, covering the given jurisdiction. Response is a compliance document structured according to these <a href="https://docs.dcom.org.uk/compliancedocument">specifications</a>. XML or JSON returned according to the content-type specified.</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                </div>
+            </div>
+            <div id="operation--v1--jurisdiction---type---shortName--put" class="swagger--panel-operation-put panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Creates a new compliance document</div>
+                    <h3 class="panel-title"><span class="operation-name">PUT</span> <strong>/v1/{jurisdiction}/{type}/{shortName}</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>Creates a new compliance document</p>
+            
+                    </section>
+            
+                        
+                            <section class="sw-request-body">
+                                
+                                    <p><a href="#sw-default-consumes">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> <span class="label label-default">application/xml</span> 
+                                    </p>
+                                                <div class="row">
+                                            <div class="col-md-6">
+                                                <p><p>A compliance document structured according to these <a href="https://docs.dcom.org.uk/compliancedocument">specifications</a>. XML or JSON returned according to the content-type specified.</p>
+                        </p>
+                                            </div>
+                                            <div class="col-md-6 sw-request-model">
+                        </div>
+                                        </div>
+                            </section>        
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>
+                                                jurisdiction
+                                            </td>
+                                            <td><p>The geographical area the document is relevant to. Specified using terms from <a href='https://www.iso.org/obp/ui/#search/code/' target=_blank>ISO 3166-2</a></p>
+                                        </td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                type
+                                            </td>
+                                            <td><p>The type of the document as per the defined types in the Compliance Document <a href="https://docs.dcom.org.uk/compliancedocument">Specifications</a></p>
+                                        </td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">integer</span>    <span class="json-property-enum" title="Possible values">, x &isin; {
+                                                        <span class="json-property-enum-item">0</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">1</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">2</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">3</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">4</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">5</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">6</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">7</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">9</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">10</span>
+                                                    
+                                                }
+                                                </span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                shortName
+                                            </td>
+                                            <td><p>The Short URL Friendly Title of the Compliance Document</p>
+                                        </td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> <span class="label label-default">application/xml</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                            
+                                                                    <section class="json-schema-properties">
+                                                                        <dl>
+                                                                                <dt data-property-name="success">
+                                                                                    <span class="json-property-name">success:</span>
+                                                                                    
+                                                                                    <span class="json-property-type">boolean</span>
+                                                                                    <span class="json-property-range" title="Value limits"></span>
+                                                                                    
+                                                                                        <span class="json-property-required"></span>
+                                                                                </dt>
+                                                                                <dd>
+                                                                                    
+                                                                                    <div class="json-inner-schema">
+                                                                                        
+                                                                                    </div>
+                                                                                </dd>
+                                                                        </dl>
+                                                                    </section>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                        <section class="sw-request-security">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-request-security-schema"></th>
+                                    <th class="sw-request-security-scopes"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td><a href="#security-definition-auth">auth</a></td>
+                                            <td>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                </div>
+            </div>
+        
+        <span id="path--v1--jurisdiction---type---shortName---version-"></span>
+            <div id="operation--v1--jurisdiction---type---shortName---version--get" class="swagger--panel-operation-get panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Returns a specified version of a compliance document</div>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/v1/{jurisdiction}/{type}/{shortName}/{version}</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>Returns a specified version of a compliance document</p>
+            
+                    </section>
+            
+                    
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>
+                                                jurisdiction
+                                            </td>
+                                            <td><p>The geographical area the document is relevant to. Specified using terms from <a href='https://www.iso.org/obp/ui/#search/code/' target=_blank>ISO 3166-2</a></p>
+                                        </td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                type
+                                            </td>
+                                            <td><p>The type of the document as per the defined types in the Compliance Document <a href="https://docs.dcom.org.uk/compliancedocument">Specifications</a></p>
+                                        </td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">integer</span>    <span class="json-property-enum" title="Possible values">, x &isin; {
+                                                        <span class="json-property-enum-item">0</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">1</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">2</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">3</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">4</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">5</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">6</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">7</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">9</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">10</span>
+                                                    
+                                                }
+                                                </span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                shortName
+                                            </td>
+                                            <td><p>The Short URL Friendly Title of the Compliance Document</p>
+                                        </td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                version
+                                            </td>
+                                            <td><p>The version name of the document to retrieve, or the latest version if absent.</p>
+                                        </td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                diff
+                                            </td>
+                                            <td><p>The version of the compliance document that should be compared with this one for changes</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                query
+                                            </td>
+                                            <td><p>Instruct the server to return either the full compliance document(full), or provide the outline structure with all content removed (structure)</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>    <span class="json-property-enum" title="Possible values">, x &isin; {
+                                                        <span class="json-property-enum-item">full,structure</span>
+                                                    
+                                                }
+                                                </span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> <span class="label label-default">application/xml</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Response is a compliance document structured according to these <a href="https://docs.dcom.org.uk/compliancedocument">specifications</a>. XML or JSON expected according to the content-type specified.</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                </div>
+            </div>
+            <div id="operation--v1--jurisdiction---type---shortName---version--put" class="swagger--panel-operation-put panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Updates a compliance document by creating a new version using the specified version name</div>
+                    <h3 class="panel-title"><span class="operation-name">PUT</span> <strong>/v1/{jurisdiction}/{type}/{shortName}/{version}</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>Updates a compliance document by creating a new version using the specified version name. This is a PUT operation due to the fact that any given version of a compliance documents is immutable and once a specific version is published it cannot be changed. To update a document a new version must be created.</p>
+            
+                    </section>
+            
+                        
+                            <section class="sw-request-body">
+                                
+                                    <p><a href="#sw-default-consumes">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> <span class="label label-default">application/xml</span> 
+                                    </p>
+                                                <div class="row">
+                                            <div class="col-md-6">
+                                                <p><p>A compliance document structured according to these <a href="https://docs.dcom.org.uk/compliancedocument">specifications</a>. XML or JSON expected according to the content-type specified.</p>
+                        </p>
+                                            </div>
+                                            <div class="col-md-6 sw-request-model">
+                        </div>
+                                        </div>
+                            </section>        
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>
+                                                jurisdiction
+                                            </td>
+                                            <td><p>The geographical area the document is relevant to. Specified using terms from <a href='https://www.iso.org/obp/ui/#search/code/' target=_blank>ISO 3166-2</a></p>
+                                        </td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                type
+                                            </td>
+                                            <td><p>The type of the document as per the defined types in the Compliance Document <a href="https://docs.dcom.org.uk/compliancedocument">Specifications</a></p>
+                                        </td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">integer</span>    <span class="json-property-enum" title="Possible values">, x &isin; {
+                                                        <span class="json-property-enum-item">0</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">1</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">2</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">3</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">4</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">5</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">6</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">7</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">9</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">10</span>
+                                                    
+                                                }
+                                                </span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                shortName
+                                            </td>
+                                            <td><p>The Short URL Friendly Title of the Compliance Document</p>
+                                        </td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                version
+                                            </td>
+                                            <td><p>The version name of the document section/paragraph being created</p>
+                                        </td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> <span class="label label-default">application/xml</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                            
+                                                                    <section class="json-schema-properties">
+                                                                        <dl>
+                                                                                <dt data-property-name="success">
+                                                                                    <span class="json-property-name">success:</span>
+                                                                                    
+                                                                                    <span class="json-property-type">boolean</span>
+                                                                                    <span class="json-property-range" title="Value limits"></span>
+                                                                                    
+                                                                                        <span class="json-property-required"></span>
+                                                                                </dt>
+                                                                                <dd>
+                                                                                    
+                                                                                    <div class="json-inner-schema">
+                                                                                        
+                                                                                    </div>
+                                                                                </dd>
+                                                                        </dl>
+                                                                    </section>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-500">
+                                        500 Internal Server Error
+                                    
+                                    </dt>
+                                    <dd class="sw-response-500">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                        <section class="sw-request-security">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-request-security-schema"></th>
+                                    <th class="sw-request-security-scopes"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td><a href="#security-definition-auth">auth</a></td>
+                                            <td>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                </div>
+            </div>
+        
+        <span id="path--v1--jurisdiction---type---shortName---version---documentReference-"></span>
+            <div id="operation--v1--jurisdiction---type---shortName---version---documentReference--get" class="swagger--panel-operation-get panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Returns a specific section/paragraph of a compliance document</div>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/v1/{jurisdiction}/{type}/{shortName}/{version}/{documentReference}</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>Returns a specific section/paragraph of a compliance document</p>
+            
+                    </section>
+            
+                    
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>
+                                                jurisdiction
+                                            </td>
+                                            <td><p>The geographical area the document is relevant to. Specified using terms from <a href='https://www.iso.org/obp/ui/#search/code/' target=_blank>ISO 3166-2</a></p>
+                                        </td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                type
+                                            </td>
+                                            <td><p>The type of the document as per the defined types in the Compliance Document <a href="https://docs.dcom.org.uk/compliancedocument">Specifications</a></p>
+                                        </td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">integer</span>    <span class="json-property-enum" title="Possible values">, x &isin; {
+                                                        <span class="json-property-enum-item">0</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">1</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">2</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">3</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">4</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">5</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">6</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">7</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">9</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">10</span>
+                                                    
+                                                }
+                                                </span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                shortName
+                                            </td>
+                                            <td><p>The Short URL Friendly Title of the Compliance Document</p>
+                                        </td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                version
+                                            </td>
+                                            <td><p>The version name of the document to retrieve, or the latest version if absent.</p>
+                                        </td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                documentReference
+                                            </td>
+                                            <td><p>The reference to the specific section/paragraph to retrieve. Should be a list of section or paragraph numbered seperated by the / character. An example for this is /1/2/a for Section 1, Paragraph 2 sub paragraph a</p>
+                                        </td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                diff
+                                            </td>
+                                            <td><p>The version of the compliance document that should be compared with this one for changes</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                query
+                                            </td>
+                                            <td><p>Instruct the server to return either the full compliance document(full), or provide the outline structure with all content removed (structure)</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>    <span class="json-property-enum" title="Possible values">, x &isin; {
+                                                        <span class="json-property-enum-item">full,structure</span>
+                                                    
+                                                }
+                                                </span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> <span class="label label-default">application/xml</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Response is a compliance document structured according to these <a href="https://docs.dcom.org.uk/compliancedocument">specifications</a>. XML or JSON expected according to the content-type specified.</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                </div>
+            </div>
+            <div id="operation--v1--jurisdiction---type---shortName---version---documentReference--put" class="swagger--panel-operation-put panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Updates a section/paragraph of a compliance document creating a new version using the specific version name</div>
+                    <h3 class="panel-title"><span class="operation-name">PUT</span> <strong>/v1/{jurisdiction}/{type}/{shortName}/{version}/{documentReference}</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>Updates a section/paragraph of a compliance document by creating a new version of this section/paragraph using the specified version name. This is a PUT operation due to the fact that any given version of a compliance documents is immutable and once a specific version is published it cannot be changed. To update a document a new version must be created.</p>
+            
+                    </section>
+            
+                        
+                            <section class="sw-request-body">
+                                
+                                    <p><a href="#sw-default-consumes">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> <span class="label label-default">application/xml</span> 
+                                    </p>
+                                                <div class="row">
+                                            <div class="col-md-6">
+                                                <p><p>A compliance document structured according to these <a href="https://docs.dcom.org.uk/compliancedocument">specifications</a>. XML or JSON expected according to the content-type specified.</p>
+                        </p>
+                                            </div>
+                                            <div class="col-md-6 sw-request-model">
+                        </div>
+                                        </div>
+                            </section>        
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>
+                                                jurisdiction
+                                            </td>
+                                            <td><p>The geographical area the document is relevant to. Specified using terms from <a href='https://www.iso.org/obp/ui/#search/code/' target=_blank>ISO 3166-2</a></p>
+                                        </td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                type
+                                            </td>
+                                            <td><p>The type of the document as per the defined types in the Compliance Document <a href="https://docs.dcom.org.uk/compliancedocument">Specifications</a></p>
+                                        </td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">integer</span>    <span class="json-property-enum" title="Possible values">, x &isin; {
+                                                        <span class="json-property-enum-item">0</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">1</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">2</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">3</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">4</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">5</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">6</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">7</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">9</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">10</span>
+                                                    
+                                                }
+                                                </span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                shortName
+                                            </td>
+                                            <td><p>The Short URL Friendly Title of the Compliance Document</p>
+                                        </td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                version
+                                            </td>
+                                            <td><p>The version name of the document section/paragraph being created</p>
+                                        </td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                documentReference
+                                            </td>
+                                            <td><p>The reference to the specific section/paragraph to retrieve. Should be a list of section or paragraph numbered seperated by the / character. An example for this is /1/2/a for Section 1, Paragraph 2 sub paragraph a</p>
+                                        </td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> <span class="label label-default">application/xml</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                            
+                                                                    <section class="json-schema-properties">
+                                                                        <dl>
+                                                                                <dt data-property-name="success">
+                                                                                    <span class="json-property-name">success:</span>
+                                                                                    
+                                                                                    <span class="json-property-type">boolean</span>
+                                                                                    <span class="json-property-range" title="Value limits"></span>
+                                                                                    
+                                                                                        <span class="json-property-required"></span>
+                                                                                </dt>
+                                                                                <dd>
+                                                                                    
+                                                                                    <div class="json-inner-schema">
+                                                                                        
+                                                                                    </div>
+                                                                                </dd>
+                                                                        </dl>
+                                                                    </section>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                        <section class="sw-request-security">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-request-security-schema"></th>
+                                    <th class="sw-request-security-scopes"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td><a href="#security-definition-auth">auth</a></td>
+                                            <td>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                </div>
+            </div>
+    
+     
+    
+                       
+        <h2>Schema definitions</h2>
+    
+            
+                <div id="definition-ComplianceDocumentIndex" class="panel panel-definition">
+                        <div class="panel-heading">
+                                <h3 class="panel-title"><a name="/definitions/ComplianceDocumentIndex"></a>ComplianceDocumentIndex:
+                                    <span class="json-property-type">
+                <span class="json-property-type">object</span>
+                <span class="json-property-range" title="Value limits"></span>
+                
+                </span>
+                                </h3>
+                        </div>
+                    <div class="panel-body">
+                                <section class="json-schema-description">
+                                    <p>Represents the essential metadata of a single compliance document within the index of compliance documents</p>
+                            
+                                </section>
+                            
+                                    <section class="json-schema-properties">
+                                        <dl>
+                                                <dt data-property-name="uid">
+                                                    <span class="json-property-name">uid:</span>
+                                                    
+                                                    <span class="json-property-type">string</span>
+                                                    <span class="json-property-range" title="Value limits"></span>
+                                                    
+                                                        <span class="json-property-required"></span>
+                                                </dt>
+                                                <dd>
+                                                    <p>The unique identifier of this compliance document</p>
+                                    
+                                                    <div class="json-inner-schema">
+                                                        
+                                                    </div>
+                                                </dd>
+                                                <dt data-property-name="shortName">
+                                                    <span class="json-property-name">shortName:</span>
+                                                    
+                                                    <span class="json-property-type">string</span>
+                                                    <span class="json-property-range" title="Value limits"></span>
+                                                    
+                                                        <span class="json-property-required"></span>
+                                                </dt>
+                                                <dd>
+                                                    <p>The shortened name for a compliance document that is used as part of the document URI.</p>
+                                    
+                                                    <div class="json-inner-schema">
+                                                        
+                                                    </div>
+                                                </dd>
+                                                <dt data-property-name="fullName">
+                                                    <span class="json-property-name">fullName:</span>
+                                                    
+                                                    <span class="json-property-type">string</span>
+                                                    <span class="json-property-range" title="Value limits"></span>
+                                                    
+                                                        <span class="json-property-required"></span>
+                                                </dt>
+                                                <dd>
+                                                    <p>The full, as published, name of the compliance document.</p>
+                                    
+                                                    <div class="json-inner-schema">
+                                                        
+                                                    </div>
+                                                </dd>
+                                                <dt data-property-name="latestVersion">
+                                                    <span class="json-property-name">latestVersion:</span>
+                                                    
+                                                    <span class="json-property-type">string</span>
+                                                    <span class="json-property-range" title="Value limits"></span>
+                                                    
+                                                        <span class="json-property-required"></span>
+                                                </dt>
+                                                <dd>
+                                                    <p>The descriptive name of the latest version of this document.</p>
+                                    
+                                                    <div class="json-inner-schema">
+                                                        
+                                                    </div>
+                                                </dd>
+                                                <dt data-property-name="latestVersionDate">
+                                                    <span class="json-property-name">latestVersionDate:</span>
+                                                    
+                                                    <span class="json-property-type">string</span>    <span class="json-property-format">(date)</span>
+                                                    <span class="json-property-range" title="Value limits"></span>
+                                                    
+                                                        <span class="json-property-required"></span>
+                                                </dt>
+                                                <dd>
+                                                    <p>The date on which the latest version was published.</p>
+                                    
+                                                    <div class="json-inner-schema">
+                                                        
+                                                    </div>
+                                                </dd>
+                                                <dt data-property-name="versions:">
+                                                    <span class="json-property-name">versions::</span>
+                                                    
+                                                    <span class="json-property-type">object[]</span>
+                                                    <span class="json-property-range" title="Value limits"></span>
+                                                    
+                                                </dt>
+                                                <dd>
+                                                    <p>A list of all versions of this document</p>
+                                    
+                                                    <div class="json-inner-schema">
+                                                        
+                                                                        <section class="json-schema-array-items">
+                                                                            
+                                                                            <span class="json-property-type">object</span>
+                                                                            <span class="json-property-range" title="Value limits"></span>
+                                                                            
+                                                                            <div class="json-inner-schema">
+                                                                                
+                                                                                        <section class="json-schema-properties">
+                                                                                            <dl>
+                                                                                                    <dt data-property-name="version">
+                                                                                                        <span class="json-property-name">version:</span>
+                                                                                                        
+                                                                                                        <span class="json-property-type">string</span>
+                                                                                                        <span class="json-property-range" title="Value limits"></span>
+                                                                                                        
+                                                                                                    </dt>
+                                                                                                    <dd>
+                                                                                                        <p>The descriptive name of this version of the document.</p>
+                                                                                        
+                                                                                                        <div class="json-inner-schema">
+                                                                                                            
+                                                                                                        </div>
+                                                                                                    </dd>
+                                                                                                    <dt data-property-name="versionDate">
+                                                                                                        <span class="json-property-name">versionDate:</span>
+                                                                                                        
+                                                                                                        <span class="json-property-type">string</span>    <span class="json-property-format">(date)</span>
+                                                                                                        <span class="json-property-range" title="Value limits"></span>
+                                                                                                        
+                                                                                                    </dt>
+                                                                                                    <dd>
+                                                                                                        <p>The date on which this version was published.</p>
+                                                                                        
+                                                                                                        <div class="json-inner-schema">
+                                                                                                            
+                                                                                                        </div>
+                                                                                                    </dd>
+                                                                                            </dl>
+                                                                                        </section>
+                                                                            </div>
+                                                                        </section>                </div>
+                                                </dd>
+                                                <dt data-property-name="language">
+                                                    <span class="json-property-name">language:</span>
+                                                    
+                                                    <span class="json-property-type">string</span>
+                                                    <span class="json-property-range" title="Value limits"></span>
+                                                    
+                                                        <span class="json-property-required"></span>
+                                                </dt>
+                                                <dd>
+                                                    <p>The language of the document. Specified using a language code from <a href='http://www.loc.gov/standards/iso639-2/php/code_list.php' target=_blank>ISO 639-2</a></p>
+                                    
+                                                    <div class="json-inner-schema">
+                                                        
+                                                    </div>
+                                                </dd>
+                                                <dt data-property-name="documentType">
+                                                    <span class="json-property-name">documentType:</span>
+                                                    
+                                                    <span class="json-property-type">object</span>    <span class="json-property-enum" title="Possible values">, x &isin; {
+                                                                    <span class="json-property-enum-item">0</span>
+                                                                ,
+                                                                    <span class="json-property-enum-item">1</span>
+                                                                ,
+                                                                    <span class="json-property-enum-item">2</span>
+                                                                ,
+                                                                    <span class="json-property-enum-item">3</span>
+                                                                ,
+                                                                    <span class="json-property-enum-item">4</span>
+                                                                ,
+                                                                    <span class="json-property-enum-item">5</span>
+                                                                ,
+                                                                    <span class="json-property-enum-item">6</span>
+                                                                ,
+                                                                    <span class="json-property-enum-item">7</span>
+                                                                ,
+                                                                    <span class="json-property-enum-item">8</span>
+                                                                ,
+                                                                    <span class="json-property-enum-item">9</span>
+                                                                
+                                                            }
+                                                            </span>
+                                                    <span class="json-property-range" title="Value limits"></span>
+                                                    
+                                                        <span class="json-property-required"></span>
+                                                </dt>
+                                                <dd>
+                                                    <p>The type of this document. These are defined as: 0: Policy, 1: Legislation, 2: Regulations, 3: Guidance, 4: Standards, 5: Products, 6: Testing/Simulating, 7: Certificates of Conformity, 8: Requirements, 9: Specification.</p>
+                                    
+                                                    <div class="json-inner-schema">
+                                                        
+                                                    </div>
+                                                </dd>
+                                                <dt data-property-name="jurisdiction">
+                                                    <span class="json-property-name">jurisdiction:</span>
+                                                    
+                                                    <span class="json-property-type">string</span>
+                                                    <span class="json-property-range" title="Value limits"></span>
+                                                    
+                                                        <span class="json-property-required"></span>
+                                                </dt>
+                                                <dd>
+                                                    <p>The geographical area the document is relevant to. Specified using terms from <a href='https://www.iso.org/obp/ui/#search/code/' target=_blank>ISO 3166-2</a></p>
+                                    
+                                                    <div class="json-inner-schema">
+                                                        
+                                                    </div>
+                                                </dd>
+                                                <dt data-property-name="embeddedLogic">
+                                                    <span class="json-property-name">embeddedLogic:</span>
+                                                    
+                                                    <span class="json-property-type">object</span>    <span class="json-property-enum" title="Possible values">, x &isin; {
+                                                                    <span class="json-property-enum-item">None</span>
+                                                                ,
+                                                                    <span class="json-property-enum-item">RASE</span>
+                                                                ,
+                                                                    <span class="json-property-enum-item">EL</span>
+                                                                
+                                                            }
+                                                            </span>
+                                                    <span class="json-property-range" title="Value limits"></span>
+                                                    
+                                                </dt>
+                                                <dd>
+                                                    <p>The type of logic embeded within this compliance document</p>
+                                    
+                                                    <div class="json-inner-schema">
+                                                        
+                                                    </div>
+                                                </dd>
+                                        </dl>
+                                    </section>
+                    </div>
+                </div>        
+                <div id="definition-ServerIdentity" class="panel panel-definition">
+                        <div class="panel-heading">
+                                <h3 class="panel-title"><a name="/definitions/ServerIdentity"></a>ServerIdentity:
+                                    <span class="json-property-type">
+                <span class="json-property-type">object</span>
+                <span class="json-property-range" title="Value limits"></span>
+                
+                </span>
+                                </h3>
+                        </div>
+                    <div class="panel-body">
+                                <section class="json-schema-description">
+                                    <p>Represents the basic metadata of the compliance document server, including an index of compliance documents</p>
+                            
+                                </section>
+                            
+                                    <section class="json-schema-properties">
+                                        <dl>
+                                                <dt data-property-name="name">
+                                                    <span class="json-property-name">name:</span>
+                                                    
+                                                    <span class="json-property-type">string</span>
+                                                    <span class="json-property-range" title="Value limits"></span>
+                                                    
+                                                        <span class="json-property-required"></span>
+                                                </dt>
+                                                <dd>
+                                                    <p>The name of this compliance document server</p>
+                                    
+                                                    <div class="json-inner-schema">
+                                                        
+                                                    </div>
+                                                </dd>
+                                                <dt data-property-name="description">
+                                                    <span class="json-property-name">description:</span>
+                                                    
+                                                    <span class="json-property-type">string</span>
+                                                    <span class="json-property-range" title="Value limits"></span>
+                                                    
+                                                </dt>
+                                                <dd>
+                                                    <p>A description of this compliance document server</p>
+                                    
+                                                    <div class="json-inner-schema">
+                                                        
+                                                    </div>
+                                                </dd>
+                                                <dt data-property-name="operator">
+                                                    <span class="json-property-name">operator:</span>
+                                                    
+                                                    <span class="json-property-type">string</span>
+                                                    <span class="json-property-range" title="Value limits"></span>
+                                                    
+                                                </dt>
+                                                <dd>
+                                                    <p>The name of the organisation operating this compliance document server</p>
+                                    
+                                                    <div class="json-inner-schema">
+                                                        
+                                                    </div>
+                                                </dd>
+                                                <dt data-property-name="securityServiceType">
+                                                    <span class="json-property-name">securityServiceType:</span>
+                                                    
+                                                    <span class="json-property-type">string</span>
+                                                    <span class="json-property-range" title="Value limits"></span>
+                                                    
+                                                </dt>
+                                                <dd>
+                                                    <p>The type of authorisation/authentication service used by this compliance document server</p>
+                                    
+                                                    <div class="json-inner-schema">
+                                                        
+                                                    </div>
+                                                </dd>
+                                                <dt data-property-name="securityServiceURI">
+                                                    <span class="json-property-name">securityServiceURI:</span>
+                                                    
+                                                    <span class="json-property-type">string</span>
+                                                    <span class="json-property-range" title="Value limits"></span>
+                                                    
+                                                        <span class="json-property-required"></span>
+                                                </dt>
+                                                <dd>
+                                                    <p>The URL of the OAUTH2 security service utilised by this compliance document server</p>
+                                    
+                                                    <div class="json-inner-schema">
+                                                        
+                                                    </div>
+                                                </dd>
+                                                <dt data-property-name="documentList">
+                                                    <span class="json-property-name">documentList:</span>
+                                                    
+                                                    <span class="json-property-type">object[]</span>
+                                                    <span class="json-property-range" title="Value limits"></span>
+                                                    
+                                                        <span class="json-property-required"></span>
+                                                </dt>
+                                                <dd>
+                                                    <p>A list of all document stored on this compliance document server</p>
+                                    
+                                                    <div class="json-inner-schema">
+                                                        
+                                                                        <section class="json-schema-array-items">
+                                                                            
+                                                                            <span class="json-property-type">    <a class="json-schema-ref" href="#/definitions/ComplianceDocument">ComplianceDocument</a>
+                                                                            </span>
+                                                                            <span class="json-property-range" title="Value limits"></span>
+                                                                            
+                                                                            <div class="json-inner-schema">
+                                                                                
+                                                                            </div>
+                                                                        </section>                </div>
+                                                </dd>
+                                        </dl>
+                                    </section>
+                    </div>
+                </div>
+</div>
+
+</body>
+</html>

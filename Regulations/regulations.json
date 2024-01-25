@@ -1,0 +1,620 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "DCOM Compliance Document Server API",
+    "description": "This is the API for the Compliance Document Server\nversion: '1.0.0'. It is important to note when reading this API that any given version of a compliance documents is immutable and once a specific version is published it cannot be changed. To update a document a new version must be created."
+  },
+  "host": "documents.dcom.org.uk",
+  "basePath": "/api/v1/",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json",
+    "application/xml"
+  ],
+  "produces": [
+    "application/json",
+    "application/xml"
+  ],
+  "securityDefinitions": {
+    "auth": {
+      "name": "Authorization",
+      "type": "bearer",
+      "description": "An bearer authorization token to prove the user is authorized to edit/create compliance documents. Acquired from the OATH2 Security Service related to this service.",
+      "in": "header"
+    }
+  },
+  "paths": {
+    "/v1/": {
+      "get": {
+        "summary": "Retrieves the basic metadata about the compliance document server",
+        "description": "Retrieves the basic metadata about the compliance document server",
+        "operationId": "GET--v1",
+        "responses": {
+          "200": {
+            "description": "Returns basic metadata about the Compliance Document Server. Equivalent XML Response is returned if content type is set appropriately.",
+            "schema": {
+              "$ref": "#/definitions/ServerIdentity"
+            }
+          }
+        }
+      }
+    },
+    "/v1/{jurisdiction}": {
+      "get": {
+        "summary": "Returns a list of all compliance documents covering the given jurisdiction",
+        "description": "Returns a list of all compliance documents covering the given jurisdiction",
+        "operationId": "GET--v1--jurisdiction--s",
+        "responses": {
+          "200": {
+            "description": "Returns a list of Compliance Documents. Equivalent XML Response is returned if content type is set appropriately.",
+            "schema": {
+              "$ref": "#/definitions/ComplianceDocumentIndex"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "jurisdiction",
+            "description":"The geographical area the document is relevant to. Specified using terms from <a href='https://www.iso.org/obp/ui/#search/code/' target=_blank>ISO 3166-2</a>",
+            "type": "string",
+            "in": "path",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/v1/{jurisdiction}/{type}": {
+      "get": {
+        "summary": "Returns a list of all compliance documents of a given type covering the given jurisdiction",
+        "description": "Returns a list of all compliance documents of a given type covering the given jurisdiction",
+        "operationId": "GET--v1--jurisdiction--s--REMOVE--type--i",
+        "responses": {
+          "200": {
+            "description": "Returns a list of Compliance Documents. Equivalent XML Response is returned if content type is set appropriately.",
+            "schema": {
+                    "$ref": "#/definitions/ComplianceDocumentIndex"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "jurisdiction",
+            "description":"The geographical area the document is relevant to. Specified using terms from <a href='https://www.iso.org/obp/ui/#search/code/' target=_blank>ISO 3166-2</a>",
+            "type": "string",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "type",
+            "description":"The type of the document as per the defined types in the Compliance Document [Specifications](https://docs.dcom.org.uk/compliancedocument)",
+            "enum": [
+              0,1,2,3,4,5,6,7,9,10
+            ],
+            "type": "integer",
+            "in": "path",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/v1/{jurisdiction}/{type}/{shortName}": {
+      "get": {
+        "summary": "Returns the latest version of a compliance document",
+        "description": "Returns the latest version of a compliance document",
+        "operationId": "GET--v1--jurisdiction--s--REMOVE--type--i--REMOVE--shortName--s",
+        "responses": {
+          "200": {
+            "description": "Returns the  latest version of the compliance document identified by shortName of the given type, covering the given jurisdiction. Response is a compliance document structured according to these [specifications](https://docs.dcom.org.uk/compliancedocument). XML or JSON returned according to the content-type specified."
+          }
+        },
+        "parameters": [
+          {
+            "name": "jurisdiction",
+            "type": "string",
+            "description":"The geographical area the document is relevant to. Specified using terms from ISO 3166-2",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "type",
+            "description":"The type of the document as per the defined types in the Compliance Document [Specifications](https://docs.dcom.org.uk/compliancedocument)",
+            "enum": [
+              0,1,2,3,4,5,6,7,9,10
+            ],
+            "type": "integer",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "shortName",
+            "description":"The Short URL Friendly Title of the Compliance Document",
+            "type": "string",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "diff",
+            "description":"The version of the compliance document that should be compared with this one for changes",
+            "type": "string",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "query",
+            "description":"Instruct the server to return either the full compliance document(full), or provide the outline structure with all content removed (structure)",
+            "enum": [
+              "full,structure"
+            ],
+            "type": "string",
+            "in": "query",
+            "required": false
+          }
+        ]
+      },
+      "put": {
+        "summary": "Creates a new compliance document",
+        "description": "Creates a new compliance document",
+        "operationId": "PUT--v1--jurisdiction--s--REMOVE--type--i--REMOVE--shortName--s",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "required": [
+                "success"
+              ],
+              "properties": {
+                "success": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "jurisdiction",
+            "type": "string",
+            "description":"The geographical area the document is relevant to. Specified using terms from <a href='https://www.iso.org/obp/ui/#search/code/' target=_blank>ISO 3166-2</a>",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "type",
+            "description":"The type of the document as per the defined types in the Compliance Document [Specifications](https://docs.dcom.org.uk/compliancedocument)",
+            "enum": [
+              0,1,2,3,4,5,6,7,9,10
+            ],
+            "type": "integer",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "shortName",
+            "description":"The Short URL Friendly Title of the Compliance Document",
+            "type": "string",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "body",
+            "required": true,
+            "description":"A compliance document structured according to these [specifications](https://docs.dcom.org.uk/compliancedocument). XML or JSON returned according to the content-type specified.",
+            "in": "body"
+          }
+        ]
+      }
+    },
+    "/v1/{jurisdiction}/{type}/{shortName}/{version}": {
+      "get": {
+        "summary": "Returns a specified version of a compliance document",
+        "description": "Returns a specified version of a compliance document",
+        "operationId": "GET--v1--jurisdiction--s--REMOVE--type--i--REMOVE--shortName--s--REMOVE--version",
+        "responses": {
+          "200": {
+            "description": "Response is a compliance document structured according to these [specifications](https://docs.dcom.org.uk/compliancedocument). XML or JSON expected according to the content-type specified."
+          }
+        },
+        "parameters": [
+          {
+            "name": "jurisdiction",
+            "description":"The geographical area the document is relevant to. Specified using terms from <a href='https://www.iso.org/obp/ui/#search/code/' target=_blank>ISO 3166-2</a>",
+            "type": "string",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "type",
+            "description":"The type of the document as per the defined types in the Compliance Document [Specifications](https://docs.dcom.org.uk/compliancedocument)",
+            "enum": [
+              0,1,2,3,4,5,6,7,9,10
+            ],
+            "type": "integer",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "shortName",
+            "description":"The Short URL Friendly Title of the Compliance Document",
+            "type": "string",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "version",
+            "description":"The version name of the document to retrieve, or the latest version if absent.",
+            "type": "string",
+            "in": "path"
+          },
+          {
+            "name": "diff",
+            "description":"The version of the compliance document that should be compared with this one for changes",
+            "type": "string",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "query",
+            "description":"Instruct the server to return either the full compliance document(full), or provide the outline structure with all content removed (structure)",
+
+            "enum": [
+              "full,structure"
+            ],
+            "type": "string",
+            "in": "query",
+            "required": false
+          }
+        ]
+      },
+      "put": {
+        "summary": "Updates a compliance document by creating a new version using the specified version name",
+        "description": "Updates a compliance document by creating a new version using the specified version name. This is a PUT operation due to the fact that any given version of a compliance documents is immutable and once a specific version is published it cannot be changed. To update a document a new version must be created.",
+        "operationId": "POST--v1--jurisdiction--s--REMOVE--type--i--REMOVE--shortName--s--REMOVE--version--s",
+        "responses": {
+          "500": {
+              "descriptions":"Returned if attempting to update a document that already exists"
+          },
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "required": [
+                "success"
+              ],
+              "properties": {
+                "success": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "jurisdiction",
+            "type": "string",
+            "description":"The geographical area the document is relevant to. Specified using terms from <a href='https://www.iso.org/obp/ui/#search/code/' target=_blank>ISO 3166-2</a>",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "type",
+            "description":"The type of the document as per the defined types in the Compliance Document [Specifications](https://docs.dcom.org.uk/compliancedocument)",
+            "enum": [
+              0,1,2,3,4,5,6,7,9,10
+            ],
+            "type": "integer",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "shortName",
+            "description":"The Short URL Friendly Title of the Compliance Document",
+            "type": "string",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "version",
+            "description":"The version name of the document section/paragraph being created",
+            "type": "string",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "body",
+            "required": true,
+            "description":"A compliance document structured according to these [specifications](https://docs.dcom.org.uk/compliancedocument). XML or JSON expected according to the content-type specified.",
+
+            "in": "body"
+          }
+        ]
+      }
+    },
+    "/v1/{jurisdiction}/{type}/{shortName}/{version}/{documentReference}": {
+      "get": {
+        "summary": "Returns a specific section/paragraph of a compliance document",
+        "description": "Returns a specific section/paragraph of a compliance document",
+        "operationId": "GET--v1--jurisdiction--s--REMOVE--type--i--REMOVE--shortName--s--REMOVE--version--s--REMOVE--documentReference--s",
+        "responses": {
+          "200": {
+            "description": "Response is a compliance document structured according to these [specifications](https://docs.dcom.org.uk/compliancedocument). XML or JSON expected according to the content-type specified.",
+          }
+        },
+        "parameters": [
+          {
+            "name": "jurisdiction",
+            "type": "string",
+            "description":"The geographical area the document is relevant to. Specified using terms from <a href='https://www.iso.org/obp/ui/#search/code/' target=_blank>ISO 3166-2</a>",
+
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "type",
+            "description":"The type of the document as per the defined types in the Compliance Document [Specifications](https://docs.dcom.org.uk/compliancedocument)",
+            "enum": [
+              0,1,2,3,4,5,6,7,9,10
+            ],
+            "type": "integer",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "shortName",
+            "description":"The Short URL Friendly Title of the Compliance Document",
+            "type": "string",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "version",
+            "description":"The version name of the document to retrieve, or the latest version if absent.",
+            "type": "string",
+            "in": "path"
+          },
+          {
+            "name": "documentReference",
+            "description": "The reference to the specific section/paragraph to retrieve. Should be a list of section or paragraph numbered seperated by the / character. An example for this is /1/2/a for Section 1, Paragraph 2 sub paragraph a",
+            "type": "string",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "diff",
+            "description":"The version of the compliance document that should be compared with this one for changes",
+            "type": "string",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "query",
+            "description":"Instruct the server to return either the full compliance document(full), or provide the outline structure with all content removed (structure)",
+            "enum": [
+              "full,structure"
+            ],
+            "type": "string",
+            "in": "query",
+            "required": false
+          }
+        ]
+      },
+      "put": {
+        "summary": "Updates a section/paragraph of a compliance document creating a new version using the specific version name",
+        "description": "Updates a section/paragraph of a compliance document by creating a new version of this section/paragraph using the specified version name. This is a PUT operation due to the fact that any given version of a compliance documents is immutable and once a specific version is published it cannot be changed. To update a document a new version must be created.",
+        "operationId": "POST--v1--jurisdiction--s--REMOVE--type--i--REMOVE--shortName--s--REMOVE--version--s--REMOVE--documentReference--s",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "required": [
+                "success"
+              ],
+              "properties": {
+                "success": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "jurisdiction",
+            "type": "string",
+            "description":"The geographical area the document is relevant to. Specified using terms from <a href='https://www.iso.org/obp/ui/#search/code/' target=_blank>ISO 3166-2</a>",
+
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "type",
+            "description":"The type of the document as per the defined types in the Compliance Document [Specifications](https://docs.dcom.org.uk/compliancedocument)",
+            "enum": [
+              0,1,2,3,4,5,6,7,9,10
+            ],
+            "type": "integer",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "shortName",
+            "description":"The Short URL Friendly Title of the Compliance Document",
+            "type": "string",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "version",
+            "description":"The version name of the document section/paragraph being created",
+            "type": "string",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "documentReference",
+            "description": "The reference to the specific section/paragraph to retrieve. Should be a list of section or paragraph numbered seperated by the / character. An example for this is /1/2/a for Section 1, Paragraph 2 sub paragraph a",
+            "type": "string",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "body",
+            "required": true,
+            "description":"A compliance document structured according to these [specifications](https://docs.dcom.org.uk/compliancedocument). XML or JSON expected according to the content-type specified.",
+            "in": "body"
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "ServerIdentity": {
+      "title": "Represents the basic metadata of the compliance document server, including an index of compliance documents",
+      "description": "Represents the basic metadata of the compliance document server, including an index of compliance documents",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description":"The name of this compliance document server"
+        },
+        "description": {
+          "type": "string",
+          "description":"A description of this compliance document server"
+        },
+        "operator": {
+          "type": "string",
+          "description":"The name of the organisation operating this compliance document server"
+        },
+        "securityServiceType": {
+          "description":"The type of authorisation/authentication service used by this compliance document server",
+          "type": "string"
+        },
+        "securityServiceURI": {
+          "description":"The URL of the OAUTH2 security service utilised by this compliance document server",
+          "type": "string"
+        },
+        "documentList": {
+          "type": "array",
+          "description":"A list of all document stored on this compliance document server",
+          "items": {
+            "$ref": "#/definitions/ComplianceDocument"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "description":
+        "operator",
+        "securityServiceURI",
+        "documentList"
+      ]
+    },
+    "ComplianceDocumentIndex": {
+      "title": "Represents the essential metadata of a single compliance document within the index of compliance documents",
+      "description": "Represents the essential metadata of a single compliance document within the index of compliance documents",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description":"The unique identifier of this compliance document"
+        },
+        "shortName": {
+          "type": "string",
+          "description":"The shortened name for a compliance document that is used as part of the document URI."
+        },
+        "fullName": {
+          "type": "string",
+          "description":"The full, as published, name of the compliance document."
+        },
+        "latestVersion": {
+          "type": "string",
+          "description":"The descriptive name of the latest version of this document."
+        },
+        "latestVersionDate": {
+          "type": "string",
+          "format":"date",
+          "description":"The date on which the latest version was published."
+        },
+        "versions:":{
+          "type":"array",
+          "description":"A list of all versions of this document",
+          "items":{
+            "type":"object",
+            "properties":{
+              "version":{
+                  "type": "string",
+                  "description":"The descriptive name of this version of the document."
+                },
+                "versionDate":{
+                  "type": "string",
+                  "format":"date",
+                  "description":"The date on which this version was published."
+                }
+              }
+          }
+        },
+        "language": {
+          "type": "string",
+          "description":"The language of the document. Specified using a language code from <a href='http://www.loc.gov/standards/iso639-2/php/code_list.php' target=_blank>ISO 639-2</a>"
+        },
+        "documentType": {
+          "enum": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"
+          ],
+          "description":"The type of this document. These are defined as: 0: Policy, 1: Legislation, 2: Regulations, 3: Guidance, 4: Standards, 5: Products, 6: Testing/Simulating, 7: Certificates of Conformity, 8: Requirements, 9: Specification."
+        },
+        "jurisdiction": {
+          "type": "string",
+          "description":"The geographical area the document is relevant to. Specified using terms from <a href='https://www.iso.org/obp/ui/#search/code/' target=_blank>ISO 3166-2</a>"
+        },
+        "embeddedLogic": {
+          "description":"The type of logic embeded within this compliance document",
+          "enum": [
+            "None",
+            "RASE",
+            "EL"
+          ]
+        }
+      },
+      "required": [
+        "uid",
+        "shortName",
+        "fullName",
+        "latestVersion",
+        "latestVersionDate",
+        "language",
+        "documentType",
+        "jurisdiction",
+        "versions"
+      ]
+    }
+  }
+}
