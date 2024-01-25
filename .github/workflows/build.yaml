@@ -19,7 +19,7 @@ jobs:
       - run: npm install -g npm@latest
       - run: npm install -g bootprint bootprint-openapi
       - run: mkdir dist
-      - run: bootprint openapi Regulations/regulations.json dist/
+      - run: bootprint openapi BuildingCodesAndRules/BuildingCodesAndRules.json dist/
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:

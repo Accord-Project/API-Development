@@ -4,7 +4,7 @@ We have initially developed a list of API that we must explore. Below we will co
 1. **Definitions** – Communicating Definitions from BSDD to the other components
     - Here we should re-use the BSDD API https://app.swaggerhub.com/apis/buildingSMART/Dictionaries/v1
 
-3. **Rules** – Communicating rules from GraphDB to other components
+3. **Building Codes and Rules** – Communicating rules from GraphDB to other components
     - API Developed by Tom Previously: https://d-com-network.github.io/DCOMDocumentation/resources/compliancedocumentserver/ or [here](compliancedocumentserver.json)
     - Future insight API:
 

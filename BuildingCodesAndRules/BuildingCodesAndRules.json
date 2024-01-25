@@ -1,34 +1,33 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "DCOM Compliance Document Server API",
-    "description": "This is the API for the Compliance Document Server\nversion: '1.0.0'. It is important to note when reading this API that any given version of a compliance documents is immutable and once a specific version is published it cannot be changed. To update a document a new version must be created."
+    "title": "ACCORD Regulations API",
+    "description": "This is the Regulations API proposed as part of the ACCORD project\nversion: '1.0.0'. It is important to note when reading this API that any given version of a compliance documents is immutable and once a specific version is published it cannot be changed. To update a document a new version must be created."
   },
-  "host": "documents.dcom.org.uk",
   "basePath": "/api/v1/",
   "schemes": [
     "https"
   ],
   "consumes": [
     "application/json",
-    "application/xml"
+    "application/yaml"
   ],
   "produces": [
     "application/json",
-    "application/xml"
+    "application/yaml"
   ],
   "securityDefinitions": {
     "auth": {
       "name": "Authorization",
       "type": "bearer",
-      "description": "An bearer authorization token to prove the user is authorized to edit/create compliance documents. Acquired from the OATH2 Security Service related to this service.",
+      "description": "An bearer authorization token to prove the user is authorized to edit/create regulations.",
       "in": "header"
     }
   },
   "paths": {
     "/v1/": {
       "get": {
-        "summary": "Retrieves the basic metadata about the compliance document server",
+        "summary": "Retrieves the basic metadata about the compliance document server and a list of r",
         "description": "Retrieves the basic metadata about the compliance document server",
         "operationId": "GET--v1",
         "responses": {
