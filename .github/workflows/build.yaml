@@ -12,14 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10' 
-      - run: npm install -g npm@latest
-      - run: npm install -g bootprint bootprint-openapi
+      - uses: oven-sh/setup-bun@v1
+      - run: bunx @redocly/cli build-docs BuildingCodesAndRules/BuildingCodesAndRules.yaml
       - run: mkdir dist
-      - run: bootprint openapi BuildingCodesAndRules/BuildingCodesAndRules.json dist/
+      - run: mv redoc-static.html dist/buildingcodesandrules.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:

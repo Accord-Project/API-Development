@@ -1,0 +1,581 @@
+openapi: 3.0.1
+info:
+  title: ACCORD Building Codes and Rules API
+  description: |-
+    This is the Building Codes and Rules API proposed as part of the ACCORD project
+    version: '1.0.0'. It is important to note when reading this API that any given version of a compliance documents is immutable and once a specific version is published it cannot be changed. To update a document a new version must be created.
+  version: "1"
+servers:
+- url: /api/v1/
+paths:
+  /v1/:
+    get:
+      summary: Retrieves the basic metadata about the server and a list of Building
+        Codes hosted by it
+      description: Retrieves the basic metadata about the server and a list of Building
+        Codes hosted by it
+      operationId: GET--v1
+      responses:
+        "200":
+          description: Retrieves the basic metadata about the server and a list of
+            Building Codes hosted by it
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerIdentityAndList'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/ServerIdentityAndList'
+  /v1/{shortName}:
+    get:
+      summary: Returns the latest version of a Building Code
+      description: Returns the latest version of a Building Code
+      operationId: GET-v1-shortname
+      parameters:
+      - name: shortName
+        in: path
+        description: The short URL friendly name of the Building Code
+        required: true
+        schema:
+          type: string
+      - name: purpose
+        in: query
+        description: "Defines the purpose of the returned data, so the content of\
+          \ the response can be tuned accordingly"
+        schema:
+          type: string
+          default: combined
+          enum:
+          - execution
+          - visualisation
+          - combined
+      - name: ruleFormat
+        in: query
+        description: Defines the formating of the executable rules within the returned
+          document.
+        schema:
+          type: string
+          default: summary
+          enum:
+          - explicit
+          - summary
+      responses:
+        "200":
+          description: Returns the  latest version of the building code identified
+            by shortName. Response is JSON or YAML according to the content-type specified.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BCRL'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/BCRL'
+  /v1/{shortName}/{version}:
+    get:
+      summary: Returns a specified version of a building code
+      description: Returns a specified version of a building code
+      operationId: GET-v1--version
+      parameters:
+      - name: shortName
+        in: path
+        description: The short URL friendly name of the Building Code
+        required: true
+        schema:
+          type: string
+      - name: version
+        in: path
+        description: "The version name of the document to retrieve, or the latest\
+          \ version if absent."
+        required: true
+        schema:
+          type: string
+      - name: purpose
+        in: query
+        description: "Defines the purpose of the returned data, so the content of\
+          \ the response can be tuned accordingly"
+        schema:
+          type: string
+          default: combined
+          enum:
+          - execution
+          - visualisation
+          - combined
+      - name: ruleFormat
+        in: query
+        description: Defines the formating of the executable rules within the returned
+          document.
+        schema:
+          type: string
+          default: summary
+          enum:
+          - explicit
+          - summary
+      responses:
+        "200":
+          description: Returns a given version of the building code identified by
+            shortName. Response is JSON or YAML according to the content-type specified.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BCRL'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/BCRL'
+    put:
+      summary: Creates a new Building Code.
+      description: Uploads a new building code with the specified short name and version
+        name. This is a PUT operation due to the fact that any given version of a
+        building code is immutable and once a specific version is published it cannot
+        be changed. To update a  building code a new version must be created.
+      operationId: PUT-v1
+      parameters:
+      - name: shortName
+        in: path
+        description: The short URL friendly name of the Building Code
+        required: true
+        schema:
+          type: string
+      - name: version
+        in: path
+        description: The version name of the document being created
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: A building code. YAML or JSON expected according to the content-type
+          specified.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BCRL'
+          application/yaml:
+            schema:
+              $ref: '#/components/schemas/BCRL'
+        required: true
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                required:
+                - success
+                type: object
+                properties:
+                  success:
+                    type: boolean
+            application/yaml:
+              schema:
+                required:
+                - success
+                type: object
+                properties:
+                  success:
+                    type: boolean
+        "500":
+          description: Returned if attempting to update a building code that already
+            exists
+          content: {}
+      security:
+      - auth: []
+      x-codegen-request-body-name: body
+  /v1/{shortName}/{version}/{documentReference}:
+    get:
+      summary: Returns a specific section/paragraph of a building code
+      description: Returns a specific section/paragraph of a building code
+      operationId: GET--Specific v1
+      parameters:
+      - name: shortName
+        in: path
+        description: The short URL friendly title of the Building Code
+        required: true
+        schema:
+          type: string
+      - name: version
+        in: path
+        description: "The version name of the building code to retrieve, or the latest\
+          \ version if absent."
+        required: true
+        schema:
+          type: string
+      - name: documentReference
+        in: path
+        description: "The reference to the specific section/paragraph to retrieve.\
+          \ Should be a list of section or paragraph numbered seperated by the / character.\
+          \ An example for this is /1/2/a for Section 1, Paragraph 2 sub paragraph\
+          \ a"
+        required: true
+        schema:
+          type: string
+      - name: purpose
+        in: query
+        description: "Defines the purpose of the returned data, so the content of\
+          \ the response can be tuned accordingly"
+        schema:
+          type: string
+          default: combined
+          enum:
+          - execution
+          - visualisation
+          - combined
+      - name: ruleFormat
+        in: query
+        description: Defines the formating of the executable rules within the returned
+          document.
+        schema:
+          type: string
+          default: summary
+          enum:
+          - explicit
+          - summary
+      responses:
+        "200":
+          description: Response is a building code. YAML or JSON expected according
+            to the content-type specified.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BCRL'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/BCRL'
+components:
+  schemas:
+    BCRL:
+      required:
+      - $id
+      - $type
+      - '@base'
+      - '@context'
+      - hasPart
+      - identifier
+      - title
+      type: object
+      properties:
+        '@base':
+          type: string
+        '@context':
+          type: array
+          items:
+            type: object
+        $type:
+          type: string
+          enum:
+          - Document
+        identifier:
+          type: string
+        $id:
+          type: string
+        title:
+          type: string
+        hasPart:
+          type: array
+          items:
+            $ref: '#/components/schemas/BuildingCodePart'
+        modified:
+          type: string
+        issued:
+          type: string
+        coverage:
+          type: string
+        temporal:
+          type: string
+        subject:
+          type: string
+      description: A Building Code Structured in BCRL
+    BuildingCodePart:
+      type: object
+      required:
+        - $type
+        - identifier
+        - $id
+      properties:
+        $type:
+          type: array
+          items:
+            type: string
+            enum:
+              - DocumentSubdivision
+              - RequirementStatement
+              - ApplicationStatement
+              - ExceptionStatement
+              - SelectionStatement
+              - Statement
+        identifier:
+          type: string
+        $id:
+          type: string
+        hasPart:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/BuildingCodePart'
+              - $ref: '#/components/schemas/Container'
+        hasInlinePart:
+          type: array
+          items:
+            $ref: '#/components/schemas/InlineBuildingCodePart'
+        title:
+          type: string
+        relation:
+          type: string
+        references:
+          type: string
+        asText:
+          type: string
+    InlineBuildingCodePart:
+      type: object
+      required:
+        - $type
+        - identifier
+        - $id
+      properties:
+        $type:
+          type: string
+          enum:
+            - CheckStatement
+            - RequirementStatement
+            - ApplicationStatement
+            - ExceptionStatement
+            - SelectionStatement
+        identifier:
+          type: string
+        $id:
+          type: string
+        hasInlinePart:
+          type: array
+          items:
+            $ref: '#/components/schemas/InlineBuildingCodePart'
+        references:
+          type: string
+        asText:
+          type: string
+        isOperationalizedBy:
+            $ref: '#/components/schemas/CheckMethod'
+    CheckMethod:
+        type: object
+        required:
+          - $type
+          - identifier
+          - $id
+        properties:
+          $type:
+            type: string
+            enum:
+              - DeclarativeCheckMethod
+              - CompositeCheckMethod
+              - CategoryCheckMethod
+              - NumericalCheckMethod
+              - BooleanCheckMethod
+          identifier:
+            type: string
+          $id:
+            type: string
+          asText:
+            type: string
+          hasTarget:
+            oneOf:
+              - type: string
+              - type: object
+                $ref: '#/components/schemas/CheckMethod'
+          hasValue:
+            oneOf:
+              - type: string
+              - type: object
+                $ref: '#/components/schemas/CheckMethod'
+          hasUnit:
+            type: string
+          hasComparator:
+            type: string
+            enum:
+              - CheckMethodComparator-eq
+              - CheckMethodComparator-neq";
+              - CheckMethodOperator-exists
+              - CheckMethodOperator-notExists
+              - CheckMethodOperator-forall
+              - CheckMethodComparator-gt
+              - CheckMethodComparator-lt
+              - CheckMethodComparator-ge
+              - CheckMethodComparator-le
+              - CheckMethodComparator-logicalAND
+              - CheckMethodComparator-logicalOR
+              - CheckMethodOperator-addition
+              - CheckMethodOperator-subtraction
+              - CheckMethodOperator-division
+              - CheckMethodOperator-multiplication
+    Container:
+      type: object
+      required:
+        - $type
+        - identifier
+        - $id
+        - contains
+      properties:
+        $type:
+          type: string
+          enum:
+            - Container
+        identifier:
+          type: string
+        $id:
+          type: string
+        caption:
+          type: string
+        contains:
+          type: object
+          oneOf:
+            - $ref: '#/components/schemas/Table'
+            - $ref: '#/components/schemas/Figure'
+    TableCell:
+      required:
+        - $type
+        - identifier
+        - $id
+      type: object
+      properties:
+        $type:
+          type: string
+          enum:
+            - Cell
+        identifier:
+          type: string
+        $id:
+          type: string
+        asText:
+          type: string
+        hasInlinePart:
+          type: array
+          items:
+            $ref: '#/components/schemas/InlineBuildingCodePart'
+    TableRow:
+      required:
+        - $type
+        - identifier
+        - $id
+        - hasPart
+      type: object
+      properties:
+        $type:
+          type: string
+          enum:
+            - Row
+        identifier:
+          type: string
+        $id:
+          type: string
+        hasPart:
+          type: array
+          items:
+              - $ref: '#/components/schemas/TableCell'
+    Table:
+      required:
+        - $type
+        - identifier
+        - $id
+        - hasPart
+      type: object
+      properties:
+        $type:
+          type: string
+          enum:
+            - Table
+        identifier:
+          type: string
+        $id:
+          type: string
+        hasPart:
+          type: array
+          items:
+              - $ref: '#/components/schemas/TableRow'
+    Figure:
+      required:
+        - $type
+        - identifier
+        - $id
+        - asText
+      type: object
+      properties:
+        $type:
+          type: string
+          enum:
+            - Image
+        identifier:
+          type: string
+        $id:
+          type: string
+        asText:
+          type: string
+    ServerIdentityAndList:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of this building code endpoint
+        description:
+          type: string
+          description: A description of this building code endpoint
+        operator:
+          type: string
+          description: The name of the organisation operating this building code endpoint
+        documentList:
+          type: array
+          description: A list of all building codes stored on this building code endpoint
+          items:
+            $ref: '#/components/schemas/BuildingCodeIndex'
+      description: "Represents the basic metadata of the server, including an index\
+        \ of building codes"
+    BuildingCodeIndex:
+      type: object
+      properties:
+        shortName:
+          type: string
+          description: The shortened name for a building code that is used as part
+            of the document URI.
+        fullName:
+          type: string
+          description: "The full, as published, name of the building code."
+        latestVersion:
+          type: string
+          description: The descriptive name of the latest version of this  building
+            code.
+        latestVersionDate:
+          type: string
+          description: The date on which the latest version was published.
+          format: date
+        'versions:':
+          type: array
+          description: A list of all versions of this  building code
+          items:
+            type: object
+            properties:
+              version:
+                type: string
+                description: The descriptive name of this version of the building
+                  code.
+              versionDate:
+                type: string
+                description: The date on which this version was published.
+                format: date
+        language:
+          type: string
+          description: The language of the building code. Specified using a language
+            code from <a href='http://www.loc.gov/standards/iso639-2/php/code_list.php'
+            target=_blank>ISO 639-2</a>
+        jurisdiction:
+          type: string
+          description: The geographical area the document is relevant to. Specified
+            using terms from <a href='https://www.iso.org/obp/ui/#search/code/' target=_blank>ISO
+            3166-2</a>
+      description: Represents the essential metadata of a single building code within
+        the index of building codes available on this server
+  securitySchemes:
+    auth:
+      type: oauth2
+      description: An bearer authorization token to prove the user is authorized to
+        edit/create building codes.
+      flows:
+        authorizationCode:
+          authorizationUrl: http://tbc
+          tokenUrl: http://tbc
+          scopes:
+            write_buildingcodes: Write Building Codes
