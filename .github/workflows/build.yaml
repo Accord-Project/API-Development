@@ -12,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: oven-sh/setup-bun@v1
-      - run: bun x @redocly/cli build-docs BuildingCodesAndRules/BuildingCodesAndRules.yaml
+      - uses: actions/setup-node@v4
+      - run: npx @redocly/cli build-docs BuildingCodesAndRules/BuildingCodesAndRules.yaml
       - run: mkdir dist
       - run: mv redoc-static.html dist/buildingcodesandrules.html
       - name: Upload artifact
