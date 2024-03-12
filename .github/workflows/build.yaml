@@ -13,9 +13,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v4
-      - run: npx @redocly/cli build-docs BuildingCodesAndRules/BuildingCodesAndRules.yaml
       - run: mkdir dist
+      - run: npx @redocly/cli build-docs BuildingCodesAndRules/BuildingCodesAndRules.yaml
       - run: mv redoc-static.html dist/buildingcodesandrules.html
+      - run: npx @redocly/cli build-docs Results/Results.yaml
+      - run: mv redoc-static.html dist/results.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
