@@ -3,12 +3,12 @@ info:
   title: ACCORD Building Codes and Rules API
   description: |-
     This is the Building Codes and Rules API proposed as part of the ACCORD project
-    version: '1.0.0'. It is important to note when reading this API that any given version of a compliance documents is immutable and once a specific version is published it cannot be changed. To update a document a new version must be created.
+    version: '1.0.0'. It is important to note when reading this API that any given version of a building code is immutable and once a specific version is published it cannot be changed. To update a document a new version must be created.
   version: "1"
 servers:
 - url: /api/v1/
 paths:
-  /v1/:
+  /:
     get:
       summary: Retrieves the basic metadata about the server and a list of Building
         Codes hosted by it
@@ -26,7 +26,7 @@ paths:
             application/yaml:
               schema:
                 $ref: '#/components/schemas/ServerIdentityAndList'
-  /v1/{shortName}:
+  /{shortName}:
     get:
       summary: Returns the latest version of a Building Code
       description: Returns the latest version of a Building Code
@@ -40,8 +40,7 @@ paths:
           type: string
       - name: purpose
         in: query
-        description: "Defines the purpose of the returned data, so the content of\
-          \ the response can be tuned accordingly"
+        description: Defines the purpose of the returned data, so the content of the response can be tuned accordingly
         schema:
           type: string
           default: combined
@@ -70,7 +69,7 @@ paths:
             application/yaml:
               schema:
                 $ref: '#/components/schemas/BCRL'
-  /v1/{shortName}/{version}:
+  /{shortName}/{version}:
     get:
       summary: Returns a specified version of a building code
       description: Returns a specified version of a building code
@@ -84,15 +83,13 @@ paths:
           type: string
       - name: version
         in: path
-        description: "The version name of the document to retrieve, or the latest\
-          \ version if absent."
+        description: The version name of the document to retrieve, or the latest version if absent
         required: true
         schema:
           type: string
       - name: purpose
         in: query
-        description: "Defines the purpose of the returned data, so the content of\
-          \ the response can be tuned accordingly"
+        description: Defines the purpose of the returned data, so the content of the response can be tuned accordingly
         schema:
           type: string
           default: combined
@@ -179,7 +176,7 @@ paths:
       security:
       - auth: []
       x-codegen-request-body-name: body
-  /v1/{shortName}/{version}/{documentReference}:
+  /{shortName}/{version}/{documentReference}:
     get:
       summary: Returns a specific section/paragraph of a building code
       description: Returns a specific section/paragraph of a building code
@@ -193,24 +190,19 @@ paths:
           type: string
       - name: version
         in: path
-        description: "The version name of the building code to retrieve, or the latest\
-          \ version if absent."
+        description: The version name of the building code to retrieve, or the latest version if absent
         required: true
         schema:
           type: string
       - name: documentReference
         in: path
-        description: "The reference to the specific section/paragraph to retrieve.\
-          \ Should be a list of section or paragraph numbered seperated by the / character.\
-          \ An example for this is /1/2/a for Section 1, Paragraph 2 sub paragraph\
-          \ a"
+        description: The reference to the specific section/paragraph to retrieve. Should be a list of section or paragraph numbered seperated by the / character. An example for this is /1/2/a for Section 1, Paragraph 2 sub paragraph a
         required: true
         schema:
           type: string
       - name: purpose
         in: query
-        description: "Defines the purpose of the returned data, so the content of\
-          \ the response can be tuned accordingly"
+        description: Defines the purpose of the returned data, so the content of the response can be tuned accordingly
         schema:
           type: string
           default: combined
@@ -522,8 +514,7 @@ components:
           description: A list of all building codes stored on this building code endpoint
           items:
             $ref: '#/components/schemas/BuildingCodeIndex'
-      description: "Represents the basic metadata of the server, including an index\
-        \ of building codes"
+      description: Represents the basic metadata of the server, including an index of building codes
     BuildingCodeIndex:
       type: object
       properties:
@@ -533,7 +524,7 @@ components:
             of the document URI.
         fullName:
           type: string
-          description: "The full, as published, name of the building code."
+          description: The full, as published, name of the building code
         latestVersion:
           type: string
           description: The descriptive name of the latest version of this  building
