@@ -1,581 +1,240 @@
 openapi: 3.0.1
 info:
-  title: ACCORD Building Codes and Rules API
+  title: ACCORD Results API
   description: |-
-    This is the Building Codes and Rules API proposed as part of the ACCORD project
-    version: '1.0.0'. It is important to note when reading this API that any given version of a compliance documents is immutable and once a specific version is published it cannot be changed. To update a document a new version must be created.
+    This is the Results API proposed as part of the ACCORD project version: '1.0.0'. It is designed to be implemented by compliance checking microservices to allow interface between the ACCORD cloud architecture and the compliance checking microservices.
   version: "1"
 servers:
 - url: /api/v1/
 paths:
-  /v1/:
+  /:
     get:
-      summary: Retrieves the basic metadata about the server and a list of Building
-        Codes hosted by it
-      description: Retrieves the basic metadata about the server and a list of Building
-        Codes hosted by it
-      operationId: GET--v1
+      summary: Retrieves the basic metadata about the compliance checking microservice
+      description: Retrieves the basic metadata about the compliance checking microservice and its capabilities.
+      operationId: GET-v1
       responses:
         "200":
-          description: Retrieves the basic metadata about the server and a list of
-            Building Codes hosted by it
+          description: Retrieves the basic metadata about the compliance checking microservice
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ServerIdentityAndList'
-            application/yaml:
-              schema:
-                $ref: '#/components/schemas/ServerIdentityAndList'
-  /v1/{shortName}:
-    get:
-      summary: Returns the latest version of a Building Code
-      description: Returns the latest version of a Building Code
-      operationId: GET-v1-shortname
-      parameters:
-      - name: shortName
-        in: path
-        description: The short URL friendly name of the Building Code
-        required: true
-        schema:
-          type: string
-      - name: purpose
-        in: query
-        description: "Defines the purpose of the returned data, so the content of\
-          \ the response can be tuned accordingly"
-        schema:
-          type: string
-          default: combined
-          enum:
-          - execution
-          - visualisation
-          - combined
-      - name: ruleFormat
-        in: query
-        description: Defines the formating of the executable rules within the returned
-          document.
-        schema:
-          type: string
-          default: summary
-          enum:
-          - explicit
-          - summary
-      responses:
-        "200":
-          description: Returns the  latest version of the building code identified
-            by shortName. Response is JSON or YAML according to the content-type specified.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BCRL'
-            application/yaml:
-              schema:
-                $ref: '#/components/schemas/BCRL'
-  /v1/{shortName}/{version}:
-    get:
-      summary: Returns a specified version of a building code
-      description: Returns a specified version of a building code
-      operationId: GET-v1--version
-      parameters:
-      - name: shortName
-        in: path
-        description: The short URL friendly name of the Building Code
-        required: true
-        schema:
-          type: string
-      - name: version
-        in: path
-        description: "The version name of the document to retrieve, or the latest\
-          \ version if absent."
-        required: true
-        schema:
-          type: string
-      - name: purpose
-        in: query
-        description: "Defines the purpose of the returned data, so the content of\
-          \ the response can be tuned accordingly"
-        schema:
-          type: string
-          default: combined
-          enum:
-          - execution
-          - visualisation
-          - combined
-      - name: ruleFormat
-        in: query
-        description: Defines the formating of the executable rules within the returned
-          document.
-        schema:
-          type: string
-          default: summary
-          enum:
-          - explicit
-          - summary
-      responses:
-        "200":
-          description: Returns a given version of the building code identified by
-            shortName. Response is JSON or YAML according to the content-type specified.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BCRL'
-            application/yaml:
-              schema:
-                $ref: '#/components/schemas/BCRL'
+                $ref: '#/components/schemas/Identity'
     put:
-      summary: Creates a new Building Code.
-      description: Uploads a new building code with the specified short name and version
-        name. This is a PUT operation due to the fact that any given version of a
-        building code is immutable and once a specific version is published it cannot
-        be changed. To update a  building code a new version must be created.
+      summary: Initiates a Compliance Check on the Microservice
+      description: Initiates a Compliance Check on the Microservice
       operationId: PUT-v1
-      parameters:
-      - name: shortName
-        in: path
-        description: The short URL friendly name of the Building Code
-        required: true
-        schema:
-          type: string
-      - name: version
-        in: path
-        description: The version name of the document being created
-        required: true
-        schema:
-          type: string
+      security:
+        - auth: []
       requestBody:
-        description: A building code. YAML or JSON expected according to the content-type
-          specified.
+        description: The parameters to initiate the compliance check. Calling services should either specify a check name (with comparator and desiredValue) or simply the document URL. If no check name is given a microservice should, if capable, attempt to parse and execute all checks within the given BuildingCode.
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BCRL'
-          application/yaml:
-            schema:
-              $ref: '#/components/schemas/BCRL'
+              $ref: '#/components/schemas/JobCreate'
         required: true
       responses:
         "200":
-          description: ""
+          description: Returns the Job ID of the initiated Job
           content:
             application/json:
               schema:
-                required:
-                - success
-                type: object
-                properties:
-                  success:
-                    type: boolean
-            application/yaml:
-              schema:
-                required:
-                - success
-                type: object
-                properties:
-                  success:
-                    type: boolean
-        "500":
-          description: Returned if attempting to update a building code that already
-            exists
-          content: {}
-      security:
-      - auth: []
-      x-codegen-request-body-name: body
-  /v1/{shortName}/{version}/{documentReference}:
+                $ref: '#/components/schemas/JobID'
+        "501":
+          description: The microservice cannot implement the requested check.
+  /{JobId}/status:
     get:
-      summary: Returns a specific section/paragraph of a building code
-      description: Returns a specific section/paragraph of a building code
-      operationId: GET--Specific v1
+      summary: Returns the status of a JobId
+      operationId: GET-v1-status
+      security:
+        - auth: []
       parameters:
-      - name: shortName
+      - name: JobId
         in: path
-        description: The short URL friendly title of the Building Code
+        description: The JobId
         required: true
         schema:
           type: string
-      - name: version
-        in: path
-        description: "The version name of the building code to retrieve, or the latest\
-          \ version if absent."
-        required: true
-        schema:
-          type: string
-      - name: documentReference
-        in: path
-        description: "The reference to the specific section/paragraph to retrieve.\
-          \ Should be a list of section or paragraph numbered seperated by the / character.\
-          \ An example for this is /1/2/a for Section 1, Paragraph 2 sub paragraph\
-          \ a"
-        required: true
-        schema:
-          type: string
-      - name: purpose
-        in: query
-        description: "Defines the purpose of the returned data, so the content of\
-          \ the response can be tuned accordingly"
-        schema:
-          type: string
-          default: combined
-          enum:
-          - execution
-          - visualisation
-          - combined
-      - name: ruleFormat
-        in: query
-        description: Defines the formating of the executable rules within the returned
-          document.
-        schema:
-          type: string
-          default: summary
-          enum:
-          - explicit
-          - summary
+          format: uuid
       responses:
         "200":
-          description: Response is a building code. YAML or JSON expected according
-            to the content-type specified.
+          description: Returns the job status
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BCRL'
-            application/yaml:
+                $ref: '#/components/schemas/JobStatus'
+        "404":
+          description: If the JobId does not exist.
+  /{JobId}/result:
+    get:
+      summary: Returns the results of a JobId
+      operationId: GET-v1-status
+      security:
+        - auth: []
+      parameters:
+      - name: JobId
+        in: path
+        description: The JobId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: Accept-Language
+        in: header
+        type: string
+        description: The requested language of the response (taken from ISO 639) defaults to EN.
+      responses:
+        "200":
+          description: Returns the results of the compliance check. Either in BCF (version 3.0, 2.1, 2.0 or 1.0) or JSON.
+          content:
+            application/json:
               schema:
-                $ref: '#/components/schemas/BCRL'
+                $ref: '#/components/schemas/ResponseJSON'
+            application/x-bcf ;version=3.0:
+              name: BCFV3.0
+            application/x-bcf ;version=2.1:
+              name: BCFv2.1
+            application/x-bcf ;version=2.0:
+              name: BCFv2.0
+            application/x-bcf ;version=1.0:
+              name: BCFv1.0
+        "503":
+          description: If the compliance checking job is not yet complete
+        "404":
+          description: If the JobId does not exist.
 components:
   schemas:
-    BCRL:
+    ResponseJSON:
       required:
-      - $id
-      - $type
-      - '@base'
-      - '@context'
-      - hasPart
-      - identifier
-      - title
+        - check
+        - results
       type: object
       properties:
-        '@base':
+        check:
           type: string
-        '@context':
+          description: The name of the check being executed
+        supportingFileContentType:
+          type: string
+          description: The MIME Content Type of the supporting file data (if present)
+        results:
           type: array
+          description: A list of responses, one item for every object that was requested to be checked upon job creation
           items:
             type: object
-        $type:
-          type: string
-          enum:
-          - Document
-        identifier:
-          type: string
-        $id:
-          type: string
-        title:
-          type: string
-        hasPart:
-          type: array
-          items:
-            $ref: '#/components/schemas/BuildingCodePart'
-        modified:
-          type: string
-        issued:
-          type: string
-        coverage:
-          type: string
-        temporal:
-          type: string
-        subject:
-          type: string
-      description: A Building Code Structured in BCRL
-    BuildingCodePart:
+            required:
+              - entityId
+              - answer
+            properties:
+              entityId:
+                description: The entity Id to which this response is relevant
+                type: string
+              answer:
+                description: The response
+                type: string
+                enum:
+                  - true
+                  - false
+                  - unknown
+              missValue:
+                description: This is an indication, if the response is false, how far out of tolerance the response is.
+                type: string
+              supportingFileData:
+                description: BASE64 Encoded data that supports/evidences this answer
+                type: string
+      description: A response from a microservice
+    JobCreate:
       type: object
       required:
-        - $type
-        - identifier
-        - $id
+        - modelUrl
+        - entityIds
+        - buildingCodeReference
       properties:
-        $type:
+        entityIds:
           type: array
+          description: The set of entity Ids to perform the given compliance check on.
           items:
             type: string
-            enum:
-              - DocumentSubdivision
-              - RequirementStatement
-              - ApplicationStatement
-              - ExceptionStatement
-              - SelectionStatement
-              - Statement
-        identifier:
+        check:
           type: string
-        $id:
+          description: The name of the given compliance check being requested.
+        comparator:          
           type: string
-        hasPart:
-          type: array
-          items:
-            oneOf:
-              - $ref: '#/components/schemas/BuildingCodePart'
-              - $ref: '#/components/schemas/Container'
-        hasInlinePart:
-          type: array
-          items:
-            $ref: '#/components/schemas/InlineBuildingCodePart'
-        title:
+          description: The comparator used to determine if a specific individual check has passed
+          enum:
+            - "!="
+            - "=="
+            - ">="
+            - "<="
+            - "<"
+            - ">"
+        desiredValue:
           type: string
-        relation:
+          description: The desired value for the result of the compliance check.
+        unit:
           type: string
-        references:
+          description: The unit of desiredValue. If absent the microservice will assume either unitless or a standard SI Unit.
+        buildingCodeReference:
           type: string
-        asText:
+          description: The URL to a building code hosted on an endpoint compatible with the Building Codes and Regulations API
+        additionalData:
           type: string
-    InlineBuildingCodePart:
+          description: Any additional data required by the microservice for execution
+        modelUrl:
+          type: string
+          description: A URL to retrieve the target model for this check
+        webhookUrl:
+          type: string
+          description: A Webhook URL that the microservice can call to signify this job is complete.
+    JobID:
       type: object
       required:
-        - $type
-        - identifier
-        - $id
+        - JobId
       properties:
-        $type:
+        JobId:
           type: string
-          enum:
-            - CheckStatement
-            - RequirementStatement
-            - ApplicationStatement
-            - ExceptionStatement
-            - SelectionStatement
-        identifier:
-          type: string
-        $id:
-          type: string
-        hasInlinePart:
-          type: array
-          items:
-            $ref: '#/components/schemas/InlineBuildingCodePart'
-        references:
-          type: string
-        asText:
-          type: string
-        isOperationalizedBy:
-            $ref: '#/components/schemas/CheckMethod'
-    CheckMethod:
-        type: object
-        required:
-          - $type
-          - identifier
-          - $id
-        properties:
-          $type:
-            type: string
-            enum:
-              - DeclarativeCheckMethod
-              - CompositeCheckMethod
-              - CategoryCheckMethod
-              - NumericalCheckMethod
-              - BooleanCheckMethod
-          identifier:
-            type: string
-          $id:
-            type: string
-          asText:
-            type: string
-          hasTarget:
-            oneOf:
-              - type: string
-              - type: object
-                $ref: '#/components/schemas/CheckMethod'
-          hasValue:
-            oneOf:
-              - type: string
-              - type: object
-                $ref: '#/components/schemas/CheckMethod'
-          hasUnit:
-            type: string
-          hasComparator:
-            type: string
-            enum:
-              - CheckMethodComparator-eq
-              - CheckMethodComparator-neq";
-              - CheckMethodOperator-exists
-              - CheckMethodOperator-notExists
-              - CheckMethodOperator-forall
-              - CheckMethodComparator-gt
-              - CheckMethodComparator-lt
-              - CheckMethodComparator-ge
-              - CheckMethodComparator-le
-              - CheckMethodComparator-logicalAND
-              - CheckMethodComparator-logicalOR
-              - CheckMethodOperator-addition
-              - CheckMethodOperator-subtraction
-              - CheckMethodOperator-division
-              - CheckMethodOperator-multiplication
-    Container:
+          format: uuid
+    JobStatus:
       type: object
       required:
-        - $type
-        - identifier
-        - $id
-        - contains
+        - complete
       properties:
-        $type:
-          type: string
-          enum:
-            - Container
-        identifier:
-          type: string
-        $id:
-          type: string
-        caption:
-          type: string
-        contains:
-          type: object
-          oneOf:
-            - $ref: '#/components/schemas/Table'
-            - $ref: '#/components/schemas/Figure'
-    TableCell:
-      required:
-        - $type
-        - identifier
-        - $id
-      type: object
-      properties:
-        $type:
-          type: string
-          enum:
-            - Cell
-        identifier:
-          type: string
-        $id:
-          type: string
-        asText:
-          type: string
-        hasInlinePart:
-          type: array
-          items:
-            $ref: '#/components/schemas/InlineBuildingCodePart'
-    TableRow:
-      required:
-        - $type
-        - identifier
-        - $id
-        - hasPart
-      type: object
-      properties:
-        $type:
-          type: string
-          enum:
-            - Row
-        identifier:
-          type: string
-        $id:
-          type: string
-        hasPart:
-          type: array
-          items:
-              - $ref: '#/components/schemas/TableCell'
-    Table:
-      required:
-        - $type
-        - identifier
-        - $id
-        - hasPart
-      type: object
-      properties:
-        $type:
-          type: string
-          enum:
-            - Table
-        identifier:
-          type: string
-        $id:
-          type: string
-        hasPart:
-          type: array
-          items:
-              - $ref: '#/components/schemas/TableRow'
-    Figure:
-      required:
-        - $type
-        - identifier
-        - $id
-        - asText
-      type: object
-      properties:
-        $type:
-          type: string
-          enum:
-            - Image
-        identifier:
-          type: string
-        $id:
-          type: string
-        asText:
-          type: string
-    ServerIdentityAndList:
+        complete:
+          type: bool
+    Identity:
       type: object
       properties:
         name:
           type: string
-          description: The name of this building code endpoint
+          description: The name of this compliance checking microservice
         description:
           type: string
-          description: A description of this building code endpoint
+          description: A description of this compliance checking microservice
         operator:
           type: string
-          description: The name of the organisation operating this building code endpoint
-        documentList:
+          description: The name of the organisation operating this compliance checking microservice
+        capabilities:
           type: array
-          description: A list of all building codes stored on this building code endpoint
+          description: A list of the capabilities of the compliance checking microservice
           items:
-            $ref: '#/components/schemas/BuildingCodeIndex'
-      description: "Represents the basic metadata of the server, including an index\
-        \ of building codes"
-    BuildingCodeIndex:
+            $ref: '#/components/schemas/CapabilitiesIndex'
+      description: Represents the basic metadata of the server, including an index of its capabilities
+    CapabilitiesIndex:
       type: object
       properties:
-        shortName:
+        check:
           type: string
-          description: The shortened name for a building code that is used as part
-            of the document URI.
-        fullName:
-          type: string
-          description: "The full, as published, name of the building code."
-        latestVersion:
-          type: string
-          description: The descriptive name of the latest version of this  building
-            code.
-        latestVersionDate:
-          type: string
-          description: The date on which the latest version was published.
-          format: date
-        'versions:':
+          description: The name of a compliance check that this microservice is capable of performing
+        entityTypes:
           type: array
-          description: A list of all versions of this  building code
           items:
-            type: object
-            properties:
-              version:
-                type: string
-                description: The descriptive name of this version of the building
-                  code.
-              versionDate:
-                type: string
-                description: The date on which this version was published.
-                format: date
-        language:
-          type: string
-          description: The language of the building code. Specified using a language
-            code from <a href='http://www.loc.gov/standards/iso639-2/php/code_list.php'
-            target=_blank>ISO 639-2</a>
-        jurisdiction:
-          type: string
-          description: The geographical area the document is relevant to. Specified
-            using terms from <a href='https://www.iso.org/obp/ui/#search/code/' target=_blank>ISO
-            3166-2</a>
-      description: Represents the essential metadata of a single building code within
-        the index of building codes available on this server
+            type: string
+          description: A list of entity types i.e. IfcDoor to which the described check can be applied
+        documentReferences:
+          type: array
+          items:
+            type: string
+          description: A list of URLs to Building Codes to which the described check can be applied
   securitySchemes:
     auth:
-      type: oauth2
-      description: An bearer authorization token to prove the user is authorized to
-        edit/create building codes.
-      flows:
-        authorizationCode:
-          authorizationUrl: http://tbc
-          tokenUrl: http://tbc
-          scopes:
-            write_buildingcodes: Write Building Codes
+      type: ApiKeyAuth
+      description: An API key to authorize that it is a component of the ACCORD cloud architecture making the API call.
+      in: header
