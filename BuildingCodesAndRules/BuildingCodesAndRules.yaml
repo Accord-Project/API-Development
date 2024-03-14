@@ -6,7 +6,7 @@ info:
     version: '1.0.0'. It is important to note when reading this API that any given version of a building code is immutable and once a specific version is published it cannot be changed. To update a document a new version must be created.
   version: "1"
 servers:
-- url: /api/v1/
+- url: /v1/
 paths:
   /:
     get:
@@ -69,6 +69,22 @@ paths:
             application/yaml:
               schema:
                 $ref: '#/components/schemas/BCRL'
+  /{shortName}/ids:
+    get:
+      summary: Returns the IDS for a Building Code
+      description: Returns the IDS for the latest version of a Building Code
+      operationId: GET-v1-shortname-ids
+      parameters:
+      - name: shortName
+        in: path
+        description: The short URL friendly name of the Building Code
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Returns the IDS for the latest version of the building code identified
+            by shortName. Response is IDS compliant XML
   /{shortName}/{version}:
     get:
       summary: Returns a specified version of a building code
@@ -176,6 +192,28 @@ paths:
       security:
       - auth: []
       x-codegen-request-body-name: body
+  /{shortName}/{version}/ids:
+    get:
+      summary: Returns the IDS for a given version of a Building Code
+      description: Returns the IDS for the given version of a Building Code
+      operationId: GET-v1-ids-shortname-version
+      parameters:
+      - name: shortName
+        in: path
+        description: The short URL friendly name of the Building Code
+        required: true
+        schema:
+          type: string
+      - name: version
+        in: path
+        description: The version name of the document to retrieve, or the latest version if absent
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Returns the IDS for the latest version of the building code identified
+            by shortName. Response is IDS compliant XML
   /{shortName}/{version}/{documentReference}:
     get:
       summary: Returns a specific section/paragraph of a building code
