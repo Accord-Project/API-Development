@@ -30,50 +30,50 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/JobCreate'
+              $ref: '#/components/schemas/CheckCreate'
         required: true
       responses:
         "200":
-          description: Returns the Job ID of the initiated Job
+          description: Returns the Check ID of the initiated Check
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/JobID'
+                $ref: '#/components/schemas/CheckID'
         "501":
           description: The microservice cannot implement the requested check.
-  /{JobId}/status:
+  /{CheckId}/status:
     get:
-      summary: Returns the status of a JobId
+      summary: Returns the status of a CheckId
       operationId: GET-v1-status
       security:
         - auth: []
       parameters:
-      - name: JobId
+      - name: CheckId
         in: path
-        description: The JobId
+        description: The CheckId
         required: true
         schema:
           type: string
           format: uuid
       responses:
         "200":
-          description: Returns the job status
+          description: Returns the Check status
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/JobStatus'
+                $ref: '#/components/schemas/CheckStatus'
         "404":
-          description: If the JobId does not exist.
-  /{JobId}/result:
+          description: If the CheckId does not exist.
+  /{CheckId}/result:
     get:
-      summary: Returns the results of a JobId
+      summary: Returns the results of a CheckId
       operationId: GET-v1-status
       security:
         - auth: []
       parameters:
-      - name: JobId
+      - name: CheckId
         in: path
-        description: The JobId
+        description: The CheckId
         required: true
         schema:
           type: string
@@ -98,9 +98,9 @@ paths:
             application/x-bcf ;version=1.0:
               name: BCFv1.0
         "503":
-          description: If the compliance checking job is not yet complete
+          description: If the compliance check is not yet complete
         "404":
-          description: If the JobId does not exist.
+          description: If the CheckId does not exist.
 components:
   schemas:
     ResponseJSON:
@@ -117,7 +117,7 @@ components:
           description: The MIME Content Type of the supporting file data (if present)
         results:
           type: array
-          description: A list of responses, one item for every object that was requested to be checked upon job creation
+          description: A list of responses, one item for every object that was requested to be checked upon Check creation
           items:
             type: object
             required:
@@ -141,7 +141,7 @@ components:
                 description: BASE64 Encoded data that supports/evidences this answer
                 type: string
       description: A response from a microservice
-    JobCreate:
+    CheckCreate:
       type: object
       required:
         - modelUrl
@@ -183,16 +183,16 @@ components:
           description: A URL to retrieve the target model for this check
         webhookUrl:
           type: string
-          description: A Webhook URL that the microservice can call to signify this job is complete.
-    JobID:
+          description: A Webhook URL that the microservice can call to signify this check is complete.
+    CheckID:
       type: object
       required:
-        - JobId
+        - CheckId
       properties:
-        JobId:
+        CheckId:
           type: string
           format: uuid
-    JobStatus:
+    CheckStatus:
       type: object
       required:
         - complete
