@@ -60,8 +60,7 @@ paths:
           - summary
       responses:
         "200":
-          description: Returns the  latest version of the building code identified
-            by shortName. Response is JSON or YAML according to the content-type specified.
+          description: Returns the  latest version of the building code identified by shortName. Response is JSON or YAML according to the content-type specified.
           content:
             application/json:
               schema:
@@ -69,6 +68,8 @@ paths:
             application/yaml:
               schema:
                 $ref: '#/components/schemas/BCRL'
+        "404":
+          description: If the building code does not exist
   /{shortName}/ids:
     get:
       summary: Returns the IDS for a Building Code
@@ -83,8 +84,9 @@ paths:
           type: string
       responses:
         "200":
-          description: Returns the IDS for the latest version of the building code identified
-            by shortName. Response is IDS compliant XML
+          description: Returns the IDS for the latest version of the building code identified by shortName. Response is IDS compliant XML
+        "404":
+          description: If the building code does not exist
   /{shortName}/{version}:
     get:
       summary: Returns a specified version of a building code
@@ -134,6 +136,8 @@ paths:
             application/yaml:
               schema:
                 $ref: '#/components/schemas/BCRL'
+        "404":
+          description: If the building code does not exist
     put:
       summary: Creates a new Building Code.
       description: Uploads a new building code with the specified short name and version
@@ -212,8 +216,9 @@ paths:
           type: string
       responses:
         "200":
-          description: Returns the IDS for the latest version of the building code identified
-            by shortName. Response is IDS compliant XML
+          description: Returns the IDS for the latest version of the building code identified by shortName. Response is IDS compliant XML
+        "404":
+          description: If the building code does not exist
   /{shortName}/{version}/{documentReference}:
     get:
       summary: Returns a specific section/paragraph of a building code
@@ -269,6 +274,8 @@ paths:
             application/yaml:
               schema:
                 $ref: '#/components/schemas/BCRL'
+        "404":
+          description: If the building code does not exist
 components:
   schemas:
     BCRL:
