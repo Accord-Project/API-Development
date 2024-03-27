@@ -20,37 +20,67 @@ paths:
               schema:
                 $ref: '#/components/schemas/Identity'
     put:
-      summary: Initiates a Compliance Check on the Microservice
-      description: Initiates a Compliance Check on the Microservice
+      summary: Initiates a Compliance Check on the Microservice based on a document reference
+      description: Initiates a Compliance Check on the Microservice based on a document reference
       operationId: PUT-v1
       security:
         - auth: []
       requestBody:
-        description: The parameters to initiate the compliance check. Calling services should either specify a check name (with comparator and desiredValue) or simply the document URL. If no check name is given a microservice should, if capable, attempt to parse and execute all checks within the given BuildingCode.
+        description: The parameters to initiate the compliance check. The microservice should parse and execute all checks within the given BuildingCode that it is capable of executing.
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CheckCreate'
         required: true
       responses:
-        "200":
+        "201":
+          description: Returns the Check Job ID of the initiated Check
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckJobID'
+        "501":
+          description: The microservice cannot implement the requested check.
+  /{ComplianceCheckName}:
+    put:
+      summary: Initiates a specific Compliance Check on the Microservice within a given document reference
+      description: Initiates a Compliance Check on the Microservice within a given document reference
+      operationId: PUT-specific-v1
+      security:
+        - auth: []
+      parameters:
+      - name: ComplianceCheckName
+        in: path
+        description: The name of the compliance check to be executed
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The parameters to initiate the compliance check. The microservice should execute only the named compliance check within the given BuildingCode.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckCreateSpecific'
+        required: true
+      responses:
+        "201":
           description: Returns the Check ID of the initiated Check
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CheckID'
+                $ref: '#/components/schemas/CheckJobID'
         "501":
           description: The microservice cannot implement the requested check.
-  /{CheckId}/status:
+  /{CheckJobID}/status:
     get:
-      summary: Returns the status of a CheckId
+      summary: Returns the status of a Check Job Id
       operationId: GET-v1-status
       security:
         - auth: []
       parameters:
-      - name: CheckId
+      - name: CheckJobID
         in: path
-        description: The CheckId
+        description: The Check Job Id
         required: true
         schema:
           type: string
@@ -63,24 +93,25 @@ paths:
               schema:
                 $ref: '#/components/schemas/CheckStatus'
         "404":
-          description: If the CheckId does not exist.
-  /{CheckId}/result:
+          description: If the CheckJobID does not exist.
+  /{CheckJobID}/result:
     get:
-      summary: Returns the results of a CheckId
-      operationId: GET-v1-status
+      summary: Returns the results of a CheckJobID
+      operationId: GET-v1-result
       security:
         - auth: []
       parameters:
-      - name: CheckId
+      - name: CheckJobID
         in: path
-        description: The CheckId
+        description: The CheckJobID
         required: true
         schema:
           type: string
           format: uuid
       - name: Accept-Language
         in: header
-        type: string
+        schema:
+          type: string
         description: The requested language of the response (taken from ISO 639) defaults to EN.
       responses:
         "200":
@@ -89,29 +120,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseJSON'
-            application/x-bcf ;version=3.0:
-              name: BCFV3.0
-            application/x-bcf ;version=2.1:
-              name: BCFv2.1
-            application/x-bcf ;version=2.0:
-              name: BCFv2.0
-            application/x-bcf ;version=1.0:
-              name: BCFv1.0
+            application/x-bcf ;version=3.0: {}
+            application/x-bcf ;version=2.1: {}
+            application/x-bcf ;version=2.0: {}
+            application/x-bcf ;version=1.0: {}
+        "204":
+          description: If the microservice cannot produce a response in the requested format
         "503":
           description: If the compliance check is not yet complete
         "404":
-          description: If the CheckId does not exist.
+          description: If the CheckJobID does not exist.
 components:
   schemas:
     ResponseJSON:
       required:
-        - check
         - results
       type: object
       properties:
-        check:
-          type: string
-          description: The name of the check being executed
         supportingFileContentType:
           type: string
           description: The MIME Content Type of the supporting file data (if present)
@@ -124,6 +149,10 @@ components:
               - entityId
               - answer
             properties:
+              documentReference:
+                type: string
+                format: url
+                description: The document reference for the compliance check being executed
               entityId:
                 description: The entity Id to which this response is relevant
                 type: string
@@ -145,7 +174,34 @@ components:
       type: object
       required:
         - modelUrl
-        - entityIds
+        - buildingCodeReferences
+      properties:
+        buildingCodeReferences:
+          type: array
+          description: The URLs to one or more building codes hosted on an endpoint compatible with the Building Codes and Regulations API
+          items:
+            type: string
+            format: url
+        modelUrl:
+          type: string
+          format: url
+          description: A URL to retrieve the target model for this check
+        additionalData:
+          type: object
+          description: Any additional data (specified as valid JSON) required by the microservice for execution
+        entityIds:
+          type: array
+          description: The set of entity Ids to restrict those that the given compliance check is performed on.
+          items:
+            type: string
+        webhookUrl:
+          type: string
+          format: url
+          description: A Webhook URL that the microservice can call to signify this check is complete.
+    CheckCreateSpecific:
+      type: object
+      required:
+        - modelUrl
         - buildingCodeReference
       properties:
         entityIds:
@@ -153,9 +209,6 @@ components:
           description: The set of entity Ids to perform the given compliance check on.
           items:
             type: string
-        check:
-          type: string
-          description: The name of the given compliance check being requested.
         comparator:          
           type: string
           description: The comparator used to determine if a specific individual check has passed
@@ -176,20 +229,22 @@ components:
           type: string
           description: The URL to a building code hosted on an endpoint compatible with the Building Codes and Regulations API
         additionalData:
-          type: string
-          description: Any additional data required by the microservice for execution
+          type: object
+          description: Any additional data (specified as valid JSON) required by the microservice for execution
         modelUrl:
           type: string
+          format: url
           description: A URL to retrieve the target model for this check
         webhookUrl:
           type: string
+          format: url
           description: A Webhook URL that the microservice can call to signify this check is complete.
-    CheckID:
+    CheckJobID:
       type: object
       required:
         - CheckId
       properties:
-        CheckId:
+        CheckJobID:
           type: string
           format: uuid
     CheckStatus:
@@ -198,7 +253,7 @@ components:
         - complete
       properties:
         complete:
-          type: bool
+          type: boolean
     Identity:
       type: object
       properties:
@@ -220,7 +275,7 @@ components:
     CapabilitiesIndex:
       type: object
       properties:
-        check:
+        complianceCheckName:
           type: string
           description: The name of a compliance check that this microservice is capable of performing
         entityTypes:
@@ -232,9 +287,11 @@ components:
           type: array
           items:
             type: string
+            format: url
           description: A list of URLs to Building Codes to which the described check can be applied
   securitySchemes:
     auth:
-      type: ApiKeyAuth
+      name: API Key Auth
+      type: apiKey
       description: An API key to authorize that it is a component of the ACCORD cloud architecture making the API call.
       in: header

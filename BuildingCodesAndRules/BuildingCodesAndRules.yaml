@@ -70,6 +70,31 @@ paths:
                 $ref: '#/components/schemas/BCRL'
         "404":
           description: If the building code does not exist
+  /{shortName}/graphQL:
+    post:
+      summary: "Execute a GraphQL query over a building code."
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GraphQLResponse"
+        "404":
+          description: If the building code does not exist
+      requestBody:
+        description: A GraphQL Query
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GraphQLQuery'
+      parameters:
+        - name: shortName
+          in: path
+          description: The short URL friendly name of the Building Code
+          required: true
+          schema:
+            type: string
   /{shortName}/ids:
     get:
       summary: Returns the IDS for a Building Code
@@ -170,7 +195,7 @@ paths:
               $ref: '#/components/schemas/BCRL'
         required: true
       responses:
-        "200":
+        "201":
           description: ""
           content:
             application/json:
@@ -196,6 +221,37 @@ paths:
       security:
       - auth: []
       x-codegen-request-body-name: body
+  /{shortName}/{version}/graphQL:
+    post:
+      summary: "Execute a GraphQL query over a specific version of a building code."
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GraphQLResponse"
+        "404":
+          description: If the building code does not exist
+      requestBody:
+        description: A GraphQL Query
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GraphQLQuery'
+      parameters:
+        - name: shortName
+          in: path
+          description: The short URL friendly name of the Building Code
+          required: true
+          schema:
+            type: string
+        - name: version
+          in: path
+          description: The version name of the document to retrieve, or the latest version if absent
+          required: true
+          schema:
+            type: string
   /{shortName}/{version}/ids:
     get:
       summary: Returns the IDS for a given version of a Building Code
@@ -278,6 +334,18 @@ paths:
           description: If the building code does not exist
 components:
   schemas:
+    GraphQLQuery:
+      type: "object"
+      description: "A GraphQL query"
+      properties:
+        query:
+          type: "string"
+    GraphQLResponse:
+      type: "object"
+      description: "A Response form a GraphQL query"
+      properties:
+        data:
+          type: "object"
     BCRL:
       required:
       - $id
@@ -503,7 +571,7 @@ components:
         hasPart:
           type: array
           items:
-              - $ref: '#/components/schemas/TableCell'
+              $ref: '#/components/schemas/TableCell'
     Table:
       required:
         - $type
@@ -523,7 +591,7 @@ components:
         hasPart:
           type: array
           items:
-              - $ref: '#/components/schemas/TableRow'
+              $ref: '#/components/schemas/TableRow'
     Figure:
       required:
         - $type
