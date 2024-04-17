@@ -115,11 +115,38 @@ paths:
         description: The requested language of the response (taken from ISO 639) defaults to EN.
       responses:
         "200":
-          description: Returns the results of the compliance check. Either in BCF (version 3.0, 2.1, 2.0 or 1.0) or JSON.
+          description: Returns the results of the compliance check in JSON.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseJSON'
+        "503":
+          description: If the compliance check is not yet complete
+        "404":
+          description: If the CheckJobID does not exist.
+  /{CheckJobID}/bcf:
+    get:
+      summary: Returns the bcf results of a CheckJobID
+      operationId: GET-v1-bcfresult
+      security:
+        - auth: []
+      parameters:
+      - name: CheckJobID
+        in: path
+        description: The CheckJobID
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: Accept-Language
+        in: header
+        schema:
+          type: string
+        description: The requested language of the response (taken from ISO 639) defaults to EN.
+      responses:
+        "200":
+          description: Returns the BCFXML results (version 3.0, 2.1, 2.0 or 1.0) or JSON.
+          content:
             application/x-bcf ;version=3.0: {}
             application/x-bcf ;version=2.1: {}
             application/x-bcf ;version=2.0: {}
@@ -173,7 +200,7 @@ components:
     CheckCreate:
       type: object
       required:
-        - modelUrl
+        - models
         - buildingCodeReferences
       properties:
         buildingCodeReferences:
@@ -182,16 +209,17 @@ components:
           items:
             type: string
             format: url
-        modelUrl:
-          type: string
-          format: url
-          description: A URL to retrieve the target model for this check
+        models:
+          type: array
+          description: The list of models for this check
+          items:
+            $ref: '#/components/schemas/ModelDetails'
         additionalData:
           type: object
           description: Any additional data (specified as valid JSON) required by the microservice for execution
         entityIds:
           type: array
-          description: The set of entity Ids to restrict those that the given compliance check is performed on.
+          description: The set of entity Ids to restrict those that the given compliance check is performed on. If blank it is assumed all entities are checked.
           items:
             type: string
         webhookUrl:
@@ -201,12 +229,12 @@ components:
     CheckCreateSpecific:
       type: object
       required:
-        - modelUrl
+        - models
         - buildingCodeReference
       properties:
         entityIds:
           type: array
-          description: The set of entity Ids to perform the given compliance check on.
+          description: The set of entity Ids to perform the given compliance check on. If blank it is assumed all entities are checked.
           items:
             type: string
         comparator:          
@@ -231,14 +259,28 @@ components:
         additionalData:
           type: object
           description: Any additional data (specified as valid JSON) required by the microservice for execution
-        modelUrl:
-          type: string
-          format: url
-          description: A URL to retrieve the target model for this check
+        models:
+          type: array
+          description: The list of models for this check
+          items:
+            $ref: '#/components/schemas/ModelDetails'
         webhookUrl:
           type: string
           format: url
           description: A Webhook URL that the microservice can call to signify this check is complete.
+    ModelDetails:
+      type: object
+      required:
+        - ModelUrl
+        - ContentType
+      properties:
+        ModelUrl:
+          type: string
+          format: url
+          description: The URL to the model file.
+        ContentType:
+          type: string
+          description: The content type of the model file.
     CheckJobID:
       type: object
       required:

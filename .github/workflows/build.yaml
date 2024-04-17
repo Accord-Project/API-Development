@@ -18,6 +18,8 @@ jobs:
       - run: mv redoc-static.html dist/buildingcodesandrules.html
       - run: npx @redocly/cli build-docs Results/Results.yaml
       - run: mv redoc-static.html dist/results.html
+      - run: npx @redocly/cli build-docs Data/Data.yaml
+      - run: mv redoc-static.html dist/data.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:

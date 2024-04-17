@@ -1,0 +1,76 @@
+openapi: 3.0.1
+info:
+  title: ACCORD Data API
+  description: |-
+    This is the Data API proposed as part of the ACCORD project version: '1.0.0'. It is designed to be implemented by the cloud permitting system to allow retrieval of models.
+  version: "1"
+servers:
+- url: /
+paths:
+  /{ModelId}:
+    get:
+      summary: Returns a given model specified by a Model Id
+      operationId: GET-model
+      security:
+        - auth: []
+      parameters:
+      - name: ModelId
+        in: path
+        description: The Model Id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: Returns the model. Which model is requested will be determined by the content type 
+        "404":
+          description: If the model does not exist.
+  /{ModelId}/graphQL:
+    post:
+      summary: "Execute a GraphQL query over an IFC model."
+      security:
+        - auth: []
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GraphQLResponse"
+        "404":
+          description: If the model does not exist, or the specified model is not an IFC model
+      requestBody:
+        description: A GraphQL Query
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GraphQLQuery'
+      parameters:
+        - name: ModelId
+          in: path
+          description: The Model Id
+          required: true
+          schema:
+            type: string
+            format: uuid
+components:
+  schemas:
+    GraphQLQuery:
+      type: "object"
+      description: "A GraphQL query"
+      properties:
+        query:
+          type: "string"
+    GraphQLResponse:
+      type: "object"
+      description: "A Response form a GraphQL query"
+      properties:
+        data:
+          type: "object"
+  securitySchemes:
+    auth:
+      name: API Key Auth
+      type: apiKey
+      description: An API key to authorize that it is a component of the ACCORD cloud architecture making the API call.
+      in: header
