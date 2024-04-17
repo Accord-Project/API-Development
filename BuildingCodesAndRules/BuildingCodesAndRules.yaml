@@ -472,6 +472,7 @@ components:
               - CategoryCheckMethod
               - NumericalCheckMethod
               - BooleanCheckMethod
+              - $id
           identifier:
             type: string
           $id:
@@ -494,7 +495,7 @@ components:
             type: string
             enum:
               - CheckMethodComparator-eq
-              - CheckMethodComparator-neq";
+              - CheckMethodComparator-neq;
               - CheckMethodOperator-exists
               - CheckMethodOperator-notExists
               - CheckMethodOperator-forall
