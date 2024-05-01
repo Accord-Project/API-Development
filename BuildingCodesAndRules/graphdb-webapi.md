@@ -1,0 +1,80 @@
+## Addresses
+
+API initial (default) address, provided with the GraphDB: https://graphdb.accordproject.eu/graphdb/webapi
+
+endpoints:
+
+GraphDB: https://graphdb.accordproject.eu/graphdb
+SPARQL:  https://graphdb.accordproject.eu/graphdb/sparql
+Semantic Objects: https://graphdb.accordproject.eu/platform
+Workbench: https://graphdb.accordproject.eu/platform-workbench
+GraphQL: https://graphdb.accordproject.eu/platform-workbench/graphql
+
+## Credentials
+
+See the credentials in the mailings
+
+## Default path
+
+All calls should go to https://graphdb.accordproject.eu/graphdb/repositories
+
+# /repositories
+
+## GET /repositories
+
+    Gets list of available repositories
+```
+curl -u admin -X GET --header 'Accept: application/json' 'https://graphdb.accordproject.eu/graphdb/repositories'
+```
+## DELETE /repositories/{repositoryID}
+    should not be used and will be forbidden
+
+## DELETE /repositories/{repositoryID}/statements
+    should not be used and will be forbidden
+
+## GET /repositories/{repositoryID}/statements
+
+    Gets list of statements in Turtle (N-Triples also allowed).
+    Use it to download current (active/latest) version of the repository. 
+```
+curl -u admin -X GET --header 'Accept: text/turtle' 'https://graphdb.accordproject.eu/graphdb/repositories/aec3po/statements'
+```
+    If in the repository there are several graphs, it will return statements from all graphs, including the default (unnamed) graph.
+    To select a particular graph use `context` parameter
+
+    and assuming the context = <https://graphdb.accordproject.eu/resource/aec3po/Spain/v2>
+```
+curl -u admin -X GET --header 'Accept: text/turtle' 'https://graphdb.accordproject.eu/graphdb/repositories/aec3po/statements?context=%3Chttps%3A%2F%2Fgraphdb.accordproject.eu/resource/aec3po/Spain/v2%3E'
+```
+
+## PUT /repositories/{repositoryID}/statements
+
+    Updates data in the repository, replacing any existing data with the supplied data.
+
+    Use it for uploading any updates in the source, BUT SHOULD BE USED WITH the creation of a new named graph {repositoryID}/{version}, because otherwise it will overwrite the current version, which is not allowed (see https://github.com/Accord-Project/API-Development/blob/main/BuildingCodesAndRules/BuildingCodesAndRules.yaml; It is important to note when reading this API that any given version of a building code is immutable and once a specific version is published it cannot be changed. To update a document a new version must be created)
+
+    So in the API call it will be:
+```
+curl -u admin -X PUT --header 'Content-Type: text/turtle' --data-binary @new_version_of_12-62a.ttl \
+  'https://graphdb.accordproject.eu/graphdb/repositories/tegel/statements?context=%3Chttps%3A%2F%2Fgraphdb.accordproject.eu/resource/tegel/12-62a/v2%3E'
+
+curl -u admin -X PUT --header 'Content-Type: text/turtle' --data-binary @new_version_of_building_code_for_spain.ttl \
+  'https://graphdb.accordproject.eu/graphdb/repositories/aec3po/statements?context=%3Chttps%3A%2F%2Fgraphdb.accordproject.eu/resource/aec3po/Spain/v2%3E'
+```
+here `context` = name of a new named graph reflecting the version, which is <https://graphdb.accordproject.eu/resource/tegel/12-62a/v2>
+
+## GET /repositories/{repositoryID}/size
+
+    The repository size (defined as the number of statements it contains). Do not use to learn the size of a particular named graph
+```
+curl -u admin -X GET --header 'Accept: text/html' 'https://graphdb.accordproject.eu/graphdb/repositories/aec3po/size'
+curl -u admin -X GET --header 'Accept: text/html' 'https://graphdb.accordproject.eu/graphdb/repositories/tegel/12-62a/size'
+```
+# /contexts
+
+## GET /repositories/{repositoryID}/contexts
+
+    Gets a list of resources that are used as context identifiers
+```
+curl -u admin -X GET --header 'Accept: application/sparql-results+json' 'https://graphdb.accordproject.eu/graphdb/repositories/aec3po/contexts'
+```
