@@ -6,7 +6,7 @@ info:
     version: '1.0.0'. It is important to note when reading this API that any given version of a building code is immutable and once a specific version is published it cannot be changed. To update a document a new version must be created.
   version: "1"
 servers:
-- url: /v1/
+  - url: /v1/
 paths:
   /:
     get:
@@ -32,32 +32,32 @@ paths:
       description: Returns the latest version of a Building Code
       operationId: GET-v1-shortname
       parameters:
-      - name: shortName
-        in: path
-        description: The short URL friendly name of the Building Code
-        required: true
-        schema:
-          type: string
-      - name: purpose
-        in: query
-        description: Defines the purpose of the returned data, so the content of the response can be tuned accordingly
-        schema:
-          type: string
-          default: combined
-          enum:
-          - execution
-          - visualisation
-          - combined
-      - name: ruleFormat
-        in: query
-        description: Defines the formating of the executable rules within the returned
-          document.
-        schema:
-          type: string
-          default: summary
-          enum:
-          - explicit
-          - summary
+        - name: shortName
+          in: path
+          description: The short URL friendly name of the Building Code
+          required: true
+          schema:
+            type: string
+        - name: purpose
+          in: query
+          description: Defines the purpose of the returned data, so the content of the response can be tuned accordingly
+          schema:
+            type: string
+            default: combined
+            enum:
+              - execution
+              - visualisation
+              - combined
+        - name: ruleFormat
+          in: query
+          description: Defines the formating of the executable rules within the returned
+            document.
+          schema:
+            type: string
+            default: summary
+            enum:
+              - explicit
+              - summary
       responses:
         "200":
           description: Returns the  latest version of the building code identified by shortName. Response is JSON or YAML according to the content-type specified.
@@ -101,12 +101,12 @@ paths:
       description: Returns the IDS for the latest version of a Building Code
       operationId: GET-v1-shortname-ids
       parameters:
-      - name: shortName
-        in: path
-        description: The short URL friendly name of the Building Code
-        required: true
-        schema:
-          type: string
+        - name: shortName
+          in: path
+          description: The short URL friendly name of the Building Code
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: Returns the IDS for the latest version of the building code identified by shortName. Response is IDS compliant XML
@@ -118,38 +118,38 @@ paths:
       description: Returns a specified version of a building code
       operationId: GET-v1--version
       parameters:
-      - name: shortName
-        in: path
-        description: The short URL friendly name of the Building Code
-        required: true
-        schema:
-          type: string
-      - name: version
-        in: path
-        description: The version name of the document to retrieve, or the latest version if absent
-        required: true
-        schema:
-          type: string
-      - name: purpose
-        in: query
-        description: Defines the purpose of the returned data, so the content of the response can be tuned accordingly
-        schema:
-          type: string
-          default: combined
-          enum:
-          - execution
-          - visualisation
-          - combined
-      - name: ruleFormat
-        in: query
-        description: Defines the formating of the executable rules within the returned
-          document.
-        schema:
-          type: string
-          default: summary
-          enum:
-          - explicit
-          - summary
+        - name: shortName
+          in: path
+          description: The short URL friendly name of the Building Code
+          required: true
+          schema:
+            type: string
+        - name: version
+          in: path
+          description: The version name of the document to retrieve, or the latest version if absent
+          required: true
+          schema:
+            type: string
+        - name: purpose
+          in: query
+          description: Defines the purpose of the returned data, so the content of the response can be tuned accordingly
+          schema:
+            type: string
+            default: combined
+            enum:
+              - execution
+              - visualisation
+              - combined
+        - name: ruleFormat
+          in: query
+          description: Defines the formating of the executable rules within the returned
+            document.
+          schema:
+            type: string
+            default: summary
+            enum:
+              - explicit
+              - summary
       responses:
         "200":
           description: Returns a given version of the building code identified by
@@ -171,18 +171,18 @@ paths:
         be changed. To update a  building code a new version must be created.
       operationId: PUT-v1
       parameters:
-      - name: shortName
-        in: path
-        description: The short URL friendly name of the Building Code
-        required: true
-        schema:
-          type: string
-      - name: version
-        in: path
-        description: The version name of the document being created
-        required: true
-        schema:
-          type: string
+        - name: shortName
+          in: path
+          description: The short URL friendly name of the Building Code
+          required: true
+          schema:
+            type: string
+        - name: version
+          in: path
+          description: The version name of the document being created
+          required: true
+          schema:
+            type: string
       requestBody:
         description: A building code. YAML or JSON expected according to the content-type
           specified.
@@ -201,7 +201,7 @@ paths:
             application/json:
               schema:
                 required:
-                - success
+                  - success
                 type: object
                 properties:
                   success:
@@ -209,7 +209,7 @@ paths:
             application/yaml:
               schema:
                 required:
-                - success
+                  - success
                 type: object
                 properties:
                   success:
@@ -219,7 +219,7 @@ paths:
             exists
           content: {}
       security:
-      - auth: []
+        - auth: []
       x-codegen-request-body-name: body
   /{shortName}/{version}/graphQL:
     post:
@@ -258,20 +258,22 @@ paths:
       description: Returns the IDS for the given version of a Building Code
       operationId: GET-v1-ids-shortname-version
       parameters:
-      - name: shortName
-        in: path
-        description: The short URL friendly name of the Building Code
-        required: true
-        schema:
-          type: string
-      - name: version
-        in: path
-        description: The version name of the document to retrieve, or the latest version if absent
-        required: true
-        schema:
-          type: string
+        - name: shortName
+          in: path
+          description: The short URL friendly name of the Building Code
+          required: true
+          schema:
+            type: string
+        - name: version
+          in: path
+          description: The version name of the document to retrieve, or the latest version if absent
+          required: true
+          schema:
+            type: string
       responses:
         "200":
+          content:
+            application/xml: {}
           description: Returns the IDS for the latest version of the building code identified by shortName. Response is IDS compliant XML
         "404":
           description: If the building code does not exist
@@ -281,44 +283,44 @@ paths:
       description: Returns a specific section/paragraph of a building code
       operationId: GET--Specific v1
       parameters:
-      - name: shortName
-        in: path
-        description: The short URL friendly title of the Building Code
-        required: true
-        schema:
-          type: string
-      - name: version
-        in: path
-        description: The version name of the building code to retrieve, or the latest version if absent
-        required: true
-        schema:
-          type: string
-      - name: documentReference
-        in: path
-        description: The reference to the specific section/paragraph to retrieve. Should be a list of section or paragraph numbered seperated by the / character. An example for this is /1/2/a for Section 1, Paragraph 2 sub paragraph a
-        required: true
-        schema:
-          type: string
-      - name: purpose
-        in: query
-        description: Defines the purpose of the returned data, so the content of the response can be tuned accordingly
-        schema:
-          type: string
-          default: combined
-          enum:
-          - execution
-          - visualisation
-          - combined
-      - name: ruleFormat
-        in: query
-        description: Defines the formating of the executable rules within the returned
-          document.
-        schema:
-          type: string
-          default: summary
-          enum:
-          - explicit
-          - summary
+        - name: shortName
+          in: path
+          description: The short URL friendly title of the Building Code
+          required: true
+          schema:
+            type: string
+        - name: version
+          in: path
+          description: The version name of the building code to retrieve, or the latest version if absent
+          required: true
+          schema:
+            type: string
+        - name: documentReference
+          in: path
+          description: The reference to the specific section/paragraph to retrieve. Should be a list of section or paragraph numbered seperated by the / character. An example for this is /1/2/a for Section 1, Paragraph 2 sub paragraph a
+          required: true
+          schema:
+            type: string
+        - name: purpose
+          in: query
+          description: Defines the purpose of the returned data, so the content of the response can be tuned accordingly
+          schema:
+            type: string
+            default: combined
+            enum:
+              - execution
+              - visualisation
+              - combined
+        - name: ruleFormat
+          in: query
+          description: Defines the formating of the executable rules within the returned
+            document.
+          schema:
+            type: string
+            default: summary
+            enum:
+              - explicit
+              - summary
       responses:
         "200":
           description: Response is a building code. YAML or JSON expected according
@@ -348,13 +350,13 @@ components:
           type: "object"
     BCRL:
       required:
-      - $id
-      - $type
-      - '@base'
-      - '@context'
-      - hasPart
-      - identifier
-      - title
+        - $id
+        - $type
+        - '@base'
+        - '@context'
+        - hasPart
+        - identifier
+        - title
       type: object
       properties:
         '@base':
@@ -364,9 +366,11 @@ components:
           items:
             type: object
         $type:
-          type: string
-          enum:
-          - Document
+          type: array
+          items:
+            type: string
+            enum:
+              - Document
         identifier:
           type: string
         $id:
@@ -436,13 +440,15 @@ components:
         - $id
       properties:
         $type:
-          type: string
-          enum:
-            - CheckStatement
-            - RequirementStatement
-            - ApplicationStatement
-            - ExceptionStatement
-            - SelectionStatement
+          type: array
+          items:
+            type: string
+            enum:
+              - CheckStatement
+              - RequirementStatement
+              - ApplicationStatement
+              - ExceptionStatement
+              - SelectionStatement
         identifier:
           type: string
         $id:
@@ -456,15 +462,17 @@ components:
         asText:
           type: string
         isOperationalizedBy:
-            $ref: '#/components/schemas/CheckMethod'
+          $ref: '#/components/schemas/CheckMethod'
     CheckMethod:
-        type: object
-        required:
-          - $type
-          - identifier
-          - $id
-        properties:
-          $type:
+      type: object
+      required:
+        - $type
+        - identifier
+        - $id
+      properties:
+        $type:
+          type: array
+          items:
             type: string
             enum:
               - DeclarativeCheckMethod
@@ -473,42 +481,78 @@ components:
               - NumericalCheckMethod
               - BooleanCheckMethod
               - $id
-          identifier:
-            type: string
-          $id:
-            type: string
-          asText:
-            type: string
-          hasTarget:
-            oneOf:
-              - type: string
-              - type: object
-                $ref: '#/components/schemas/CheckMethod'
-          hasValue:
-            oneOf:
-              - type: string
-              - type: object
-                $ref: '#/components/schemas/CheckMethod'
-          hasUnit:
-            type: string
-          hasComparator:
+        identifier:
+          type: string
+        $id:
+          type: string
+        asText:
+          type: string
+        executes:
+          type: object
+          $ref: '#/components/schemas/BSDDRef'
+        hasNestedTarget:
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/CheckMethod'
+        hasBSDDTarget:
+          type: object
+          $ref: '#/components/schemas/BSDDRef'
+        hasTarget:
+          oneOf:
+            - type: string
+            - type: number
+            - type: boolean
+        hasBSDDValue:
+          type: object
+          $ref: '#/components/schemas/BSDDRef'
+        hasNestedValue:
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/CheckMethod'
+        hasValue:
+          oneOf:
+            - type: string
+            - type: number
+            - type: boolean
+        hasUnit:
+          type: string
+        hasOperator:
+          type: string
+          enum:
+            - CheckMethodOperator-addition
+            - CheckMethodOperator-subtraction
+            - CheckMethodOperator-division
+            - CheckMethodOperator-multiplication
+            - CheckMethodOperator-notExists
+            - CheckMethodOperator-forall
+            - CheckMethodOperator-exists
+        hasComparator:
+          type: string
+          enum:
+            - CheckMethodComparator-eq
+            - CheckMethodComparator-neq;
+            - CheckMethodComparator-gt
+            - CheckMethodComparator-lt
+            - CheckMethodComparator-ge
+            - CheckMethodComparator-le
+            - CheckMethodComparator-logicalAND
+            - CheckMethodComparator-logicalOR
+    BSDDRef:
+      type: object
+      required:
+        - $type
+        - $id
+      properties:
+        $id:
+          type: string
+        $type:
+          type: array
+          items:
             type: string
             enum:
-              - CheckMethodComparator-eq
-              - CheckMethodComparator-neq;
-              - CheckMethodOperator-exists
-              - CheckMethodOperator-notExists
-              - CheckMethodOperator-forall
-              - CheckMethodComparator-gt
-              - CheckMethodComparator-lt
-              - CheckMethodComparator-ge
-              - CheckMethodComparator-le
-              - CheckMethodComparator-logicalAND
-              - CheckMethodComparator-logicalOR
-              - CheckMethodOperator-addition
-              - CheckMethodOperator-subtraction
-              - CheckMethodOperator-division
-              - CheckMethodOperator-multiplication
+              - $id
     Container:
       type: object
       required:
@@ -518,9 +562,11 @@ components:
         - contains
       properties:
         $type:
-          type: string
-          enum:
-            - Container
+          type: array
+          items:
+            type: string
+            enum:
+              - Container
         identifier:
           type: string
         $id:
@@ -540,9 +586,11 @@ components:
       type: object
       properties:
         $type:
-          type: string
-          enum:
-            - Cell
+          type: array
+          items:
+            type: string
+            enum:
+              - Cell
         identifier:
           type: string
         $id:
@@ -562,9 +610,11 @@ components:
       type: object
       properties:
         $type:
-          type: string
-          enum:
-            - Row
+          type: array
+          items:
+            type: string
+            enum:
+              - Row
         identifier:
           type: string
         $id:
@@ -572,7 +622,7 @@ components:
         hasPart:
           type: array
           items:
-              $ref: '#/components/schemas/TableCell'
+            $ref: '#/components/schemas/TableCell'
     Table:
       required:
         - $type
@@ -582,9 +632,11 @@ components:
       type: object
       properties:
         $type:
-          type: string
-          enum:
-            - Table
+          type: array
+          items:
+            type: string
+            enum:
+              - Table
         identifier:
           type: string
         $id:
@@ -592,7 +644,7 @@ components:
         hasPart:
           type: array
           items:
-              $ref: '#/components/schemas/TableRow'
+            $ref: '#/components/schemas/TableRow'
     Figure:
       required:
         - $type
@@ -602,9 +654,11 @@ components:
       type: object
       properties:
         $type:
-          type: string
-          enum:
-            - Image
+          type: array
+          items:
+            type: string
+            enum:
+              - Image
         identifier:
           type: string
         $id:
