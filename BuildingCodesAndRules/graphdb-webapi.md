@@ -57,7 +57,17 @@ and assuming the context = <https://graphdb.accordproject.eu/resource/aec3po/Spa
 curl -u admin -X GET --header 'Accept: text/turtle' \
 'https://graphdb.accordproject.eu/graphdb/repositories/aec3po/statements?context=%3Chttps%3A%2F%2Fgraphdb.accordproject.eu/resource/aec3po/Spain/v2%3E'
 ```
+## GET /repositories/{repositoryID}/statements in JSONLD
+To be able to download JSONLD, use real link where the context is exposed.
+So to download a regulation use the following link `https://ci.mines-stetienne.fr/aec3po/aec3po.jsonld` where aec3po is actually placed.
 
+```
+curl -u rft:iNglareNAFTb8 -X \
+GET https://graphdb.accordproject.eu/graphdb/repositories/aec3po/statements?context=%3Chttps://graphdb.accordproject.eu/resource/aec3po/FI-CO2/v1%3E \
+--header 'Accept: application/ld+json;profile=http://www.w3.org/ns/json-ld#compacted' \
+--header 'Link: <https://ci.mines-stetienne.fr/aec3po/aec3po.jsonld>; \
+rel="http://www.w3.org/ns/json-ld#context"'
+```
 ## PUT /repositories/{repositoryID}/statements
 
 Updates data in the repository, replacing any existing data with the supplied data.
