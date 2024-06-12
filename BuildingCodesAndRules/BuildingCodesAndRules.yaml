@@ -58,6 +58,12 @@ paths:
             enum:
               - explicit
               - summary
+        - name: language
+          in: query
+          description: Specifies the requested language specified using a standard IETF language tag.
+          schema:
+            type: string
+            default: en-gb
       responses:
         "200":
           description: Returns the  latest version of the building code identified by shortName. Response is JSON or YAML according to the content-type specified.
@@ -95,6 +101,12 @@ paths:
           required: true
           schema:
             type: string
+        - name: language
+          in: query
+          description: Specifies the requested language specified using a standard IETF language tag.
+          schema:
+            type: string
+            default: en-gb
   /{shortName}/ids:
     get:
       summary: Returns the IDS for a Building Code
@@ -150,6 +162,12 @@ paths:
             enum:
               - explicit
               - summary
+        - name: language
+          in: query
+          description: Specifies the requested language specified using a standard IETF language tag.
+          schema:
+            type: string
+            default: en-gb
       responses:
         "200":
           description: Returns a given version of the building code identified by
@@ -701,7 +719,7 @@ components:
           type: string
           description: The date on which the latest version was published.
           format: date
-        'versions:':
+        versions:
           type: array
           description: A list of all versions of this  building code
           items:
