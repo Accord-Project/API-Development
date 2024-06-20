@@ -14,7 +14,6 @@ paths:
         Codes hosted by it
       description: Retrieves the basic metadata about the server and a list of Building
         Codes hosted by it
-      operationId: GET--v1
       responses:
         "200":
           description: Retrieves the basic metadata about the server and a list of
@@ -26,15 +25,14 @@ paths:
             application/yaml:
               schema:
                 $ref: '#/components/schemas/ServerIdentityAndList'
-  /{shortName}:
+  /{classification}:
     get:
       summary: Returns the latest version of a Building Code
       description: Returns the latest version of a Building Code
-      operationId: GET-v1-shortname
       parameters:
-        - name: shortName
+        - name: classification
           in: path
-          description: The short URL friendly name of the Building Code
+          description: The classification of the building code
           required: true
           schema:
             type: string
@@ -76,7 +74,7 @@ paths:
                 $ref: '#/components/schemas/BCRL'
         "404":
           description: If the building code does not exist
-  /{shortName}/graphQL:
+  /{classification}/graphQL:
     post:
       summary: "Execute a GraphQL query over a building code."
       responses:
@@ -95,9 +93,9 @@ paths:
             schema:
               $ref: '#/components/schemas/GraphQLQuery'
       parameters:
-        - name: shortName
+        - name: classification
           in: path
-          description: The short URL friendly name of the Building Code
+          description: The classification of the building code
           required: true
           schema:
             type: string
@@ -107,15 +105,14 @@ paths:
           schema:
             type: string
             default: en-gb
-  /{shortName}/ids:
+  /{classification}/ids:
     get:
       summary: Returns the IDS for a Building Code
       description: Returns the IDS for the latest version of a Building Code
-      operationId: GET-v1-shortname-ids
       parameters:
-        - name: shortName
+        - name: classification
           in: path
-          description: The short URL friendly name of the Building Code
+          description: The classification of the building code
           required: true
           schema:
             type: string
@@ -124,18 +121,248 @@ paths:
           description: Returns the IDS for the latest version of the building code identified by shortName. Response is IDS compliant XML
         "404":
           description: If the building code does not exist
-  /{shortName}/{version}:
+  /{classification}/{documentNumber}:
     get:
-      summary: Returns a specified version of a building code
-      description: Returns a specified version of a building code
-      operationId: GET-v1--version
+      summary: Returns the latest version of a Building Code
+      description: Returns the latest version of a Building Code
       parameters:
-        - name: shortName
+        - name: classification
           in: path
-          description: The short URL friendly name of the Building Code
+          description: The classification of the building code
           required: true
           schema:
             type: string
+        - name: documentNumber
+          in: path
+          description: The document number (if there are multiple documents in this category) if not present defaults to 1
+          required: true
+          schema:
+            type: number
+        - name: purpose
+          in: query
+          description: Defines the purpose of the returned data, so the content of the response can be tuned accordingly
+          schema:
+            type: string
+            default: combined
+            enum:
+              - execution
+              - visualisation
+              - combined
+        - name: ruleFormat
+          in: query
+          description: Defines the formating of the executable rules within the returned
+            document.
+          schema:
+            type: string
+            default: summary
+            enum:
+              - explicit
+              - summary
+        - name: language
+          in: query
+          description: Specifies the requested language specified using a standard IETF language tag.
+          schema:
+            type: string
+            default: en-gb
+      responses:
+        "200":
+          description: Returns the  latest version of the building code identified by shortName. Response is JSON or YAML according to the content-type specified.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BCRL'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/BCRL'
+        "404":
+          description: If the building code does not exist
+  /{classification}/{documentNumber}/graphQL:
+    post:
+      summary: "Execute a GraphQL query over a building code."
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GraphQLResponse"
+        "404":
+          description: If the building code does not exist
+      requestBody:
+        description: A GraphQL Query
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GraphQLQuery'
+      parameters:
+        - name: classification
+          in: path
+          description: The classification of the building code
+          required: true
+          schema:
+            type: string
+        - name: documentNumber
+          in: path
+          description: The document number (if there are multiple documents in this category) if not present defaults to 1
+          required: true
+          schema:
+            type: number
+        - name: language
+          in: query
+          description: Specifies the requested language specified using a standard IETF language tag.
+          schema:
+            type: string
+            default: en-gb
+  /{classification}/{documentNumber}/ids:
+    get:
+      summary: Returns the IDS for a Building Code
+      description: Returns the IDS for the latest version of a Building Code
+      parameters:
+        - name: classification
+          in: path
+          description: The classification of the building code
+          required: true
+          schema:
+            type: string
+        - name: documentNumber
+          in: path
+          description: The document number (if there are multiple documents in this category) if not present defaults to 1
+          required: true
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Returns the IDS for the latest version of the building code identified by shortName. Response is IDS compliant XML
+        "404":
+          description: If the building code does not exist
+  /{classification}/{version}:
+    get:
+      summary: Returns a specified version of a building code
+      description: Returns a specified version of a building code
+      parameters:
+        - name: classification
+          in: path
+          description: The classification of the building code
+          required: true
+          schema:
+            type: string
+        - name: version
+          in: path
+          description: The version name of the document to retrieve, or the latest version if absent
+          required: true
+          schema:
+            type: string
+        - name: purpose
+          in: query
+          description: Defines the purpose of the returned data, so the content of the response can be tuned accordingly
+          schema:
+            type: string
+            default: combined
+            enum:
+              - execution
+              - visualisation
+              - combined
+        - name: ruleFormat
+          in: query
+          description: Defines the formating of the executable rules within the returned
+            document.
+          schema:
+            type: string
+            default: summary
+            enum:
+              - explicit
+              - summary
+        - name: language
+          in: query
+          description: Specifies the requested language specified using a standard IETF language tag.
+          schema:
+            type: string
+            default: en-gb
+      responses:
+        "200":
+          description: Returns a given version of the building code identified by
+            shortName. Response is JSON or YAML according to the content-type specified.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BCRL'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/BCRL'
+        "404":
+          description: If the building code does not exist
+  /{classification}/{version}/graphQL:
+    post:
+      summary: "Execute a GraphQL query over a specific version of a building code."
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GraphQLResponse"
+        "404":
+          description: If the building code does not exist
+      requestBody:
+        description: A GraphQL Query
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GraphQLQuery'
+      parameters:
+        - name: classification
+          in: path
+          description: The classification of the building code
+          required: true
+          schema:
+            type: string
+        - name: version
+          in: path
+          description: The version name of the document to retrieve, or the latest version if absent
+          required: true
+          schema:
+            type: string
+  /{classification}/{version}/ids:
+    get:
+      summary: Returns the IDS for a given version of a Building Code
+      description: Returns the IDS for the given version of a Building Code
+      parameters:
+        - name: classification
+          in: path
+          description: The classification of the building code
+          required: true
+          schema:
+            type: string
+        - name: version
+          in: path
+          description: The version name of the document to retrieve, or the latest version if absent
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/xml: {}
+          description: Returns the IDS for the latest version of the building code identified by shortName. Response is IDS compliant XML
+        "404":
+          description: If the building code does not exist  
+  /{classification}/{documentNumber}/{version}:
+    get:
+      summary: Returns a specified version of a building code
+      description: Returns a specified version of a building code
+      parameters:
+        - name: classification
+          in: path
+          description: The classification of the building code
+          required: true
+          schema:
+            type: string
+        - name: documentNumber
+          in: path
+          description: The document number (if there are multiple documents in this category) if not present defaults to 1
+          required: true
+          schema:
+            type: number
         - name: version
           in: path
           description: The version name of the document to retrieve, or the latest version if absent
@@ -187,14 +414,19 @@ paths:
         name. This is a PUT operation due to the fact that any given version of a
         building code is immutable and once a specific version is published it cannot
         be changed. To update a  building code a new version must be created.
-      operationId: PUT-v1
       parameters:
-        - name: shortName
+        - name: classification
           in: path
-          description: The short URL friendly name of the Building Code
+          description: The classification of the building code
           required: true
           schema:
             type: string
+        - name: documentNumber
+          in: path
+          description: The document number (if there are multiple documents in this category) if not present defaults to 1
+          required: true
+          schema:
+            type: number
         - name: version
           in: path
           description: The version name of the document being created
@@ -239,7 +471,7 @@ paths:
       security:
         - auth: []
       x-codegen-request-body-name: body
-  /{shortName}/{version}/graphQL:
+  /{classification}/{documentNumber}/{version}/graphQL:
     post:
       summary: "Execute a GraphQL query over a specific version of a building code."
       responses:
@@ -258,30 +490,41 @@ paths:
             schema:
               $ref: '#/components/schemas/GraphQLQuery'
       parameters:
-        - name: shortName
+        - name: classification
           in: path
-          description: The short URL friendly name of the Building Code
+          description: The classification of the building code
           required: true
           schema:
             type: string
+        - name: documentNumber
+          in: path
+          description: The document number (if there are multiple documents in this category) if not present defaults to 1
+          required: true
+          schema:
+            type: number
         - name: version
           in: path
           description: The version name of the document to retrieve, or the latest version if absent
           required: true
           schema:
             type: string
-  /{shortName}/{version}/ids:
+  /{classification}/{documentNumber}/{version}/ids:
     get:
       summary: Returns the IDS for a given version of a Building Code
       description: Returns the IDS for the given version of a Building Code
-      operationId: GET-v1-ids-shortname-version
       parameters:
-        - name: shortName
+        - name: classification
           in: path
-          description: The short URL friendly name of the Building Code
+          description: The classification of the building code
           required: true
           schema:
             type: string
+        - name: documentNumber
+          in: path
+          description: The document number (if there are multiple documents in this category) if not present defaults to 1
+          required: true
+          schema:
+            type: number
         - name: version
           in: path
           description: The version name of the document to retrieve, or the latest version if absent
@@ -295,21 +538,26 @@ paths:
           description: Returns the IDS for the latest version of the building code identified by shortName. Response is IDS compliant XML
         "404":
           description: If the building code does not exist
-  /{shortName}/{version}/{documentReference}:
+  /{classification}/{documentNumber}/{version}/{documentReference}:
     get:
       summary: Returns a specific section/paragraph of a building code
       description: Returns a specific section/paragraph of a building code
-      operationId: GET--Specific v1
       parameters:
-        - name: shortName
+        - name: classification
           in: path
-          description: The short URL friendly title of the Building Code
+          description: The classification of the building code
           required: true
           schema:
             type: string
+        - name: documentNumber
+          in: path
+          description: The document number (if there are multiple documents in this category) if not present defaults to 1
+          required: true
+          schema:
+            type: number
         - name: version
           in: path
-          description: The version name of the building code to retrieve, or the latest version if absent
+          description: The version of the document
           required: true
           schema:
             type: string
