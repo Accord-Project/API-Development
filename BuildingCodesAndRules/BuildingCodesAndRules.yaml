@@ -841,10 +841,12 @@ components:
     BuildingCodeIndex:
       type: object
       properties:
-        shortName:
+        classification:
           type: string
-          description: The shortened name for a building code that is used as part
-            of the document URI.
+          description: The classification of the building code
+        documentNumber:
+          type: number
+          description: The document number within this classification
         fullName:
           type: string
           description: The full, as published, name of the building code
