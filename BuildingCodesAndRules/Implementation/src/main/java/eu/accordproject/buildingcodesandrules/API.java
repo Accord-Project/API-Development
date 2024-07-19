@@ -24,7 +24,7 @@ public class API extends ResourceConfig {
   public API() {
 
     LOGGER.info("Checking Environment Variables");
-    Dotenv dotenv = Dotenv.load();
+    Dotenv dotenv =  Dotenv.configure().ignoreIfMissing().load();
 
     String graphDBUURL = dotenv.get("GRAPHDB_URL");
     String graphDBUsername = dotenv.get("GRAPHDB_USERNAME");

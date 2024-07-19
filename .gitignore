@@ -1,3 +1,4 @@
 
 .DS_Store
 BuildingCodesAndRules/Implementation/target/**
+BuildingCodesAndRules/Implementation/.env
