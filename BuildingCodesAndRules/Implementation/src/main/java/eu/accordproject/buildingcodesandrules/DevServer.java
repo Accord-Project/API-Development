@@ -10,7 +10,8 @@ import io.github.cdimascio.dotenv.Dotenv;
 import org.testcontainers.utility.MountableFile;
 import java.nio.file.Paths;
 import org.slf4j.LoggerFactory;
-import org.testcontainers.containers.output.Slf4jLogConsumer;
+import org.testcontainers.containers.output.BaseConsumer;
+import org.testcontainers.containers.output.OutputFrame;
 
 public class DevServer {
 
@@ -29,8 +30,7 @@ public class DevServer {
                         .withCopyFileToContainer(warFile, "/usr/local/tomcat/webapps/ROOT.war")
                         .withFixedExposedPort(tomcatPort,8080);
                 tomcat.start();
-                Slf4jLogConsumer logConsumer = new Slf4jLogConsumer(LoggerFactory.getLogger(DevServer.class));
-                tomcat.followOutput(logConsumer);
+                tomcat.followOutput(new SystemLogConsumer());
 
 
                Runtime.getRuntime().addShutdownHook(new Thread()
@@ -58,5 +58,14 @@ public class DevServer {
         }
 
 	}
+}
 
+
+class SystemLogConsumer extends BaseConsumer<SystemLogConsumer> {
+    @Override
+    public void accept(OutputFrame outputFrame) {
+        final OutputFrame.OutputType outputType = outputFrame.getType();
+        final String utf8String = outputFrame.getUtf8StringWithoutLineEnding();
+        System.out.println(utf8String);
+    }
 }

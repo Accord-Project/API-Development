@@ -26,7 +26,7 @@ public class GraphDBService {
 
 	public String getGraphList() {
 		try{
-			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url+"/contexts")).GET().setHeader("Authorization", auth).build();
+			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url+"/graphdb/repositories/aec3po/contexts")).GET().setHeader("Authorization", auth).build();
 			HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 			return response.body();
 		} catch (Exception e) {
@@ -35,9 +35,11 @@ public class GraphDBService {
 		return "";
 	}
 
-	public String getJSONLD(String country, String document) {
+	public String getJSONLD(String classification, String version, String jurisdiction, String language) {
 		try{ 
-			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url+"/statements?context=%3C"+url+"/resource/aec3po/" + country + "/" + document + "/en-gb/v1%3E"))
+			String finalUrl = url+"/graphdb/repositories/aec3po/statements?context=%3C"+url+"/resource/aec3po/" + jurisdiction + "/" + classification + "/"+language+"/"+version.trim()+"%3E";
+			System.out.println(finalUrl);
+			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(finalUrl))
     			.GET()
     			.setHeader("Accept", "application/ld+json;profile=http://www.w3.org/ns/json-ld#framed")
     			.setHeader("Link", "<https://ci.mines-stetienne.fr/aec3po/aec3po_frame.jsonld>; rel=\"http://www.w3.org/ns/json-ld#frame\"")

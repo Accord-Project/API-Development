@@ -23,10 +23,6 @@ public class BuildingCodeIndex {
     @Getter
     @Setter
     private String classification;
-
-    @Getter
-    @Setter
-    private Integer documentNumber;
     
     @Getter
     @Setter
