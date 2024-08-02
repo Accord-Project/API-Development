@@ -38,7 +38,6 @@ public class GraphDBService {
 	public String getJSONLD(String classification, String version, String jurisdiction, String language) {
 		try{ 
 			String finalUrl = url+"/graphdb/repositories/aec3po/statements?context=%3C"+url+"/resource/aec3po/" + jurisdiction + "/" + classification + "/"+language+"/"+version.trim()+"%3E";
-			System.out.println(finalUrl);
 			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(finalUrl))
     			.GET()
     			.setHeader("Accept", "application/ld+json;profile=http://www.w3.org/ns/json-ld#framed")

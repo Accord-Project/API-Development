@@ -24,11 +24,18 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import org.dcom.core.compliancedocument.ComplianceDocument;
 import accord.regulationsimporter.OntologyComplianceDocumentDeserialiser;
+import accord.regulationsimporter.OntologyComplianceDocumentSerialiser;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
 
 @Path("/")
 public class Endpoints {
 
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private ServerIdentity identity = null;
 
 	//various helper methods to actually perform the main tasks
 
@@ -60,36 +67,16 @@ public class Endpoints {
             System.out.println("Failed to parse document:"+country+":"+classification+":"+version.trim()+":"+language);
             return "";
         }
-        System.out.println("TITLE"+document.getMetaDataString("dcterms:title"));
         return document.getMetaDataString("dcterms:title");
     }
 
-	private ServerIdentity getIdentity() {
-		ServerIdentity identity = new ServerIdentity();
-		identity.setName("Exemplar Regulations Server");
-		identity.setDescription("Exemplar Regulations Server");
-		identity.setOperator("ACCORD Project");
-
-		String[] codes = graphDB.getGraphList().split("\n");
-
-		for (String code: codes) {
-			if (code.equals("contextID")) continue;
-			String[] splitCode = code.split("/");
-			// URL IS https://graphdb.accordproject.eu/resource/aec3po/${country}/${classifier}/${language}/${date}
-			if (splitCode.length < 4) {
-                System.out.println("[Error] Invalid Graph Path");
-                continue;
-            }
-			String date = splitCode[splitCode.length-1];
-			String language = splitCode[splitCode.length-2];
-			String classification = splitCode[splitCode.length-3];
-			String country = splitCode[splitCode.length-4];
+    private void parseCode(ServerIdentity identity, String date, String language, String classification, String country) {
             LocalDate parsedDate = null;
             try {
                 parsedDate = LocalDate.parse(date.trim(),formatter);
             } catch (Exception e) {
-                System.out.println("Invalid Date("+date.trim()+") time for Graph:"+code);
-                continue;
+                System.out.println("Invalid Date("+date.trim()+") time for Graph:"+date+":"+language+":"+classification+":"+country);
+                return;
             }
             BuildingCodeIndex index = getBuildingCodeIndex(identity,classification,country);
             if (index == null) {
@@ -117,6 +104,31 @@ public class Endpoints {
             }
             index.setLatestVersion(latestVersionText);
             index.setLatestVersionDate(latestVersion);
+    }
+
+	private ServerIdentity getIdentity() {
+        if (identity != null ) return identity;
+		identity = new ServerIdentity();
+		identity.setName("Exemplar Regulations Server");
+		identity.setDescription("Exemplar Regulations Server");
+		identity.setOperator("ACCORD Project");
+
+		String[] codes = graphDB.getGraphList().split("\n");
+
+		for (String code: codes) {
+			if (code.equals("contextID")) continue;
+            String[] splitCode = code.split("/");
+            // URL IS https://graphdb.accordproject.eu/resource/aec3po/${country}/${classifier}/${language}/${date}
+            if (splitCode.length < 4) {
+                System.out.println("[Error] Invalid Graph Path");
+                continue;
+            }
+            String date = splitCode[splitCode.length-1];
+            String language = splitCode[splitCode.length-2];
+            String classification = splitCode[splitCode.length-3];
+            String country = splitCode[splitCode.length-4];
+            parseCode(identity,date,language,classification,country);;
+
 		}
 		return identity;
 	}
@@ -130,13 +142,63 @@ public class Endpoints {
 		return "";
 	}
 
-	private String getRegulationText(String classification, String version, String purpose, String ruleFormat, String language, String jurisdiction, boolean yaml) {
+    private String getRegulationText(String classification, String version, String purpose, String ruleFormat, String language, String jurisdiction, boolean yaml) {
+        return getRegulationText(classification,version,purpose,ruleFormat,language,jurisdiction,yaml,null);
+    }
+
+    private String getIDS(String jurisdiction, String classification, String version) {
+        if (version==null) version = latestVersion("en-gb",classification,jurisdiction);
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        System.out.println(jurisdiction+"_"+classification.toUpperCase()+"_"+version+ ".ids");
+        InputStream istream = classLoader.getResourceAsStream("/"+jurisdiction+"_"+classification.toUpperCase()+"_"+version+ ".ids");
+        if (istream==null) return "";
+        String ids = new BufferedReader(new InputStreamReader(istream, StandardCharsets.UTF_8)).lines().collect(Collectors.joining("\n"));
+        return ids;
+    }
+
+    private String latestVersion(String language,String classification, String jurisdiction) {
+        //find the latest version
+            String[] codes = graphDB.getGraphList().split("\n");
+            LocalDate latestDate = null;
+            for (String code: codes) {
+                if (code.equals("contextID")) continue;
+                String[] splitCode = code.split("/");
+                // URL IS https://graphdb.accordproject.eu/resource/aec3po/${country}/${classifier}/${language}/${date}
+                if (splitCode.length < 4) {
+                    System.out.println("[Error] Invalid Graph Path");
+                    continue;
+                }
+            
+            if (!splitCode[splitCode.length-2].equals(language)) continue;
+            if (!splitCode[splitCode.length-3].equals(classification)) continue;
+            if (!splitCode[splitCode.length-4].equals(jurisdiction)) continue;
+            LocalDate currentDate = LocalDate.parse(splitCode[splitCode.length-1].trim(),formatter);
+            if (latestDate == null || latestDate.isBefore(currentDate)) latestDate = currentDate;
+            }
+            if (latestDate == null) {
+                System.out.println("No Valid Date Found");
+                return "";
+            }
+           return latestDate.format(formatter);
+    }
+
+	private String getRegulationText(String classification, String version, String purpose, String ruleFormat, String language, String jurisdiction, boolean yaml,String path) {
 		if (purpose == null || purpose.equals("")) purpose ="explicit";
         if (ruleFormat == null || ruleFormat.equals("")) ruleFormat ="explicit";
         if (language == null || language.equals("")) language = "en-gb";
-        String regText=graphDB.getJSONLD(classification, version, jurisdiction, language);
-        //implement reparsing for purpose and rule format
+        if (version == null) version=latestVersion(language,classification,jurisdiction);
 
+        String regText=graphDB.getJSONLD(classification, version, jurisdiction, language);
+        regText=regText.replaceAll("https://regulations.accordproject.eu/","");
+        ComplianceDocument document = OntologyComplianceDocumentDeserialiser.parseComplianceDocument(regText);
+        //implement reparsing for purpose and rule format
+        boolean simpleRules = false;
+        boolean noExecution = false;
+        if (ruleFormat.equals("summary"))  simpleRules = true;  
+        if (purpose.equals("execution")) {
+            document = Filters.executionFilter(document);
+        } else if (purpose.equals("visualisation")) noExecution = true;
+        regText = OntologyComplianceDocumentSerialiser.serialise(document,document.getMetaDataString("dcterms:title").replaceAll("[^A-Za-z0-9]", ""),simpleRules,noExecution,path);
 		if (yaml) return jsonToYaml(regText);
 		return regText;
 	}
@@ -206,7 +268,7 @@ public class Endpoints {
         @PathParam("jurisdiction") String jurisdiction,
         @PathParam("classification") String classification) 
     {
-        return Response.status(501).build();
+        return Response.ok(getIDS(jurisdiction,classification,null)).build();
     }
 
    
@@ -260,7 +322,7 @@ public class Endpoints {
         @PathParam("classification") String classification,
         @PathParam("version") String version) 
     {
-        return Response.status(501).build();
+        return Response.ok(getIDS(jurisdiction,classification,version)).build();
     }
 
     @GET
@@ -269,12 +331,13 @@ public class Endpoints {
     public Response latestJSON3(
         @PathParam("jurisdiction") String jurisdiction,
         @PathParam("classification") String classification,
-        @PathParam("clause") String clause,
+        @PathParam("version") String version,
+        @PathParam("path") String path,
         @QueryParam("purpose") String purpose,
     	@QueryParam("ruleFormat") String ruleFormat,
     	@QueryParam("language") String language) 
     {
-        return Response.status(501).build();
+        return Response.ok(getRegulationText(classification,version,purpose,ruleFormat,language,jurisdiction,false,path)).build();
     }
 
     @GET
@@ -284,12 +347,12 @@ public class Endpoints {
         @PathParam("jurisdiction") String jurisdiction,
         @PathParam("classification") String classification,
         @PathParam("version") String version,
-        @PathParam("clause") String clause,
+        @PathParam("path") String path,
         @QueryParam("purpose") String purpose,
     	@QueryParam("ruleFormat") String ruleFormat,
     	@QueryParam("language") String language) 
     {
-        return Response.status(501).build();
+        return Response.ok(getRegulationText(classification,version,purpose,ruleFormat,language,jurisdiction,true,path)).build();
     }
 
     @PUT
