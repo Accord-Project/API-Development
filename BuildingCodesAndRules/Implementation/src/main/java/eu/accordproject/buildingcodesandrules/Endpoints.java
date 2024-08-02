@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 public class Endpoints {
 
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private ServerIdentity identity = null;
+    private static ServerIdentity identity = null;
 
 	//various helper methods to actually perform the main tasks
 
