@@ -544,8 +544,6 @@ components:
           type: object
           $ref: '#/components/schemas/BSDDRef'
         hasNestedTarget:
-          type: array
-          items:
             type: object
             $ref: '#/components/schemas/CheckMethod'
         hasBSDDTarget:
