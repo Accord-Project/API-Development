@@ -13,6 +13,7 @@ import org.dcom.core.compliancedocument.Table;
 import org.dcom.core.compliancedocument.Figure;
 import java.util.List;
 import org.dcom.core.compliancedocument.inline.*;
+import java.util.ArrayList;
 
 public class Filters {
 
@@ -93,7 +94,18 @@ public class Filters {
 
 	public static boolean checkInlineItem(InlineItem i) {
 		if (i instanceof InlineString) return false;
-		if (i instanceof RASEBox || i instanceof RASETag) return true;
+		if (i instanceof RASEBox) {
+			 RASEBox box = ((RASEBox)i);
+			 List<InlineItem> toRemove = new ArrayList<InlineItem>();
+			 for (int x=0; x < box.getNoSubItems(); x++) {
+			 	boolean execution = checkInlineItem(box.getSubItem(x));
+				if (!execution) toRemove.add(box.getSubItem(x));
+			 }
+			for (InlineItem item : toRemove) box.removeSubItem(item);
+			if (box.getNoSubItems() ==0) return false;
+			else return true;
+		}
+		if (i instanceof RASETag && ((RASETag)i).getType() != 0)  return true;
 		return false;
 	}
 }

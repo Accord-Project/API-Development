@@ -94,5 +94,6 @@ def putSpecific(
     body: CheckCreateSpecific = ...,
 ) -> Optional[CheckJobID]:
     uuid = uuid4()
+    body.complianceCheckName = compliance_check_name
     app.state.cache[uuid]=app.state.threadPool.submit(ExecuteComplianceCheckSpecific, body)
     return CheckJobID(CheckJobID=uuid)
