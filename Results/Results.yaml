@@ -271,10 +271,9 @@ components:
     ModelDetails:
       type: object
       required:
-        - ModelUrl
-        - ContentType
+        - URL
       properties:
-        ModelUrl:
+        URL:
           type: string
           format: url
           description: The URL to the model file.
