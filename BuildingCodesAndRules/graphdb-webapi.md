@@ -32,7 +32,7 @@ Default GraphDB WebAPI generated path is https://graphdb.accordproject.eu/reposi
 Gets list of available repositories
 
 ```
-curl -u admin -X GET --header 'Accept: application/json' \
+curl -u login:password -X GET --header 'Accept: application/json' \
 'https://graphdb.accordproject.eu/graphdb/repositories'
 ```
 ## DELETE /repositories/{repositoryID}
@@ -46,7 +46,7 @@ should not be used and will be forbidden
 Gets list of statements in Turtle (N-Triples also allowed).
 Use it to download current (active/latest) version of the repository. 
 ```
-curl -u admin -X GET --header 'Accept: text/turtle' \
+curl -u login:password -X GET --header 'Accept: text/turtle' \
 'https://graphdb.accordproject.eu/graphdb/repositories/aec3po/statements'
 ```
 If in the repository there are several graphs, it will return statements from all graphs, including the default (unnamed) graph.
@@ -54,7 +54,7 @@ To select a particular graph use `context` parameter
 
 and assuming the context = <https://graphdb.accordproject.eu/resource/aec3po/Spain/v2>
 ```
-curl -u admin -X GET --header 'Accept: text/turtle' \
+curl -u login:password -X GET --header 'Accept: text/turtle' \
 'https://graphdb.accordproject.eu/graphdb/repositories/aec3po/statements?context=%3Chttps%3A%2F%2Fgraphdb.accordproject.eu/resource/aec3po/Spain/v2%3E'
 ```
 
@@ -70,7 +70,7 @@ we added to whitelist:
 Now JSONLD compaced profile can be obtained 
 
 ```
-curl -u rft:iNglareNAFTb8 -X \
+curl -u login:password -X \
 GET https://graphdb.accordproject.eu/graphdb/repositories/aec3po/statements?context=%3Chttps://graphdb.accordproject.eu/resource/aec3po/FI-CO2/v1%3E \
 --header 'Accept: application/ld+json;profile=http://www.w3.org/ns/json-ld#compacted' \
 --header 'Link: <https://ci.mines-stetienne.fr/aec3po/aec3po.jsonld>; \
@@ -94,11 +94,11 @@ See https://github.com/Accord-Project/API-Development/blob/main/BuildingCodesAnd
 
 To upload TTL:
 ```
-curl -u admin -X PUT --header 'Content-Type: text/turtle' \
+curl -u login:password -X PUT --header 'Content-Type: text/turtle' \
   --data-binary @new_version_of_12-62a.ttl \
   'https://graphdb.accordproject.eu/graphdb/repositories/tegel/statements?context=%3Chttps%3A%2F%2Fgraphdb.accordproject.eu/resource/tegel/12-62a/v2%3E'
 
-curl -u admin -X PUT --header 'Content-Type: text/turtle' \
+curl -u login:password -X PUT --header 'Content-Type: text/turtle' \
   --data-binary @new_version_of_building_code_for_spain.ttl \
   'https://graphdb.accordproject.eu/graphdb/repositories/aec3po/statements?context=%3Chttps%3A%2F%2Fgraphdb.accordproject.eu/resource/aec3po/Spain/v2%3E'
 ```
@@ -115,9 +115,9 @@ curl -u login:password -X PUT --header 'Content-Type: application/ld+json'  \
 
 The repository size (defined as the number of statements it contains). Do not use to learn the size of a particular named graph
 ```
-curl -u admin -X GET --header 'Accept: text/html' \
+curl -u login:password -X GET --header 'Accept: text/html' \
 'https://graphdb.accordproject.eu/graphdb/repositories/aec3po/size'
-curl -u admin -X GET --header 'Accept: text/html' \
+curl -u login:password -X GET --header 'Accept: text/html' \
 'https://graphdb.accordproject.eu/graphdb/repositories/tegel/12-62a/size'
 ```
 # /contexts
@@ -126,5 +126,5 @@ curl -u admin -X GET --header 'Accept: text/html' \
 
     Gets a list of resources that are used as context identifiers
 ```
-curl -u admin -X GET --header 'Accept: application/sparql-results+json' 'https://graphdb.accordproject.eu/graphdb/repositories/aec3po/contexts'
+curl -u login:password -X GET --header 'Accept: application/sparql-results+json' 'https://graphdb.accordproject.eu/graphdb/repositories/aec3po/contexts'
 ```
