@@ -28,6 +28,6 @@ ACCORD has identified a set of 7 APIs that are required.
 # ACCORD Developed APIs
 
 ACCORD is thus developing two API specifications:
-1.  The [Building Codes and Rules](https://accord-project.github.io/API-Development/buildingcodesandrules.html) API 
-2.  The [Results](https://accord-project.github.io/API-Development/results.html) API
+1.  The [Building Codes and Rules](https://accord-project.github.io/API-Development/buildingcodesandrules.html) API - Exemplar Implementation [Here](https://github.com/Accord-Project/API-Development/tree/main/BuildingCodesAndRules/Implementation)
+2.  The [Results](https://accord-project.github.io/API-Development/results.html) API - Exemplar Implementation [Here](https://github.com/Accord-Project/API-Development/tree/main/Results/Implementation)
 3.  The [Data](https://accord-project.github.io/API-Development/data.html) API

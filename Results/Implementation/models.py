@@ -106,6 +106,10 @@ class CheckCreate(BaseModel):
 
 
 class CheckCreateSpecific(BaseModel):
+    complianceCheckName: Optional[str] = Field(
+        None,
+        description='The name of the compliance check',
+    )
     entityIds: Optional[List[str]] = Field(
         None,
         description='The set of entity Ids to perform the given compliance check on. If blank it is assumed all entities are checked.',
