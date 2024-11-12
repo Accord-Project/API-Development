@@ -70,7 +70,11 @@ we added to whitelist:
 Now JSONLD compaced profile can be obtained 
 
 ```
-curl -u login:password -X GET https://graphdb.accordproject.eu/graphdb/repositories/aec3po/statements?context=%3Chttps://graphdb.accordproject.eu/resource/aec3po/FI-CO2/v1%3E --header 'Accept: application/ld+json;profile=http://www.w3.org/ns/json-ld#compacted' --header 'Link: <https://ci.mines-stetienne.fr/aec3po/aec3po.jsonld>; rel="http://www.w3.org/ns/json-ld#context"'
+curl -u login:password -X \
+GET https://graphdb.accordproject.eu/graphdb/repositories/aec3po/statements?context=%3Chttps://graphdb.accordproject.eu/resource/aec3po/FI-CO2/v1%3E \
+--header 'Accept: application/ld+json;profile=http://www.w3.org/ns/json-ld#compacted' \
+--header 'Link: <https://ci.mines-stetienne.fr/aec3po/aec3po.jsonld>; \
+rel="http://www.w3.org/ns/json-ld#context"'
 ```
 
 JSONLD framed profile as well:
@@ -94,6 +98,9 @@ curl -u login:password -X PUT --header 'Content-Type: text/turtle' \
   --data-binary @new_version_of_12-62a.ttl \
   'https://graphdb.accordproject.eu/graphdb/repositories/tegel/statements?context=%3Chttps%3A%2F%2Fgraphdb.accordproject.eu/resource/tegel/12-62a/v2%3E'
 
+curl -u login:password -X PUT --header 'Content-Type: text/turtle' \
+  --data-binary @new_version_of_building_code_for_spain.ttl \
+  'https://graphdb.accordproject.eu/graphdb/repositories/aec3po/statements?context=%3Chttps%3A%2F%2Fgraphdb.accordproject.eu/resource/aec3po/Spain/v2%3E'
 ```
 here `context` = name of a new named graph reflecting the version, which is <https://graphdb.accordproject.eu/resource/tegel/12-62a/v2>
 
