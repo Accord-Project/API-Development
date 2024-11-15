@@ -56,8 +56,8 @@ class Comparator(Enum):
 
 
 class ModelDetails(BaseModel):
-    ModelUrl: str = Field(..., description='The URL to the model file.')
-    ContentType: str = Field(..., description='The content type of the model file.')
+    URL: str = Field(..., description='The URL to the model file.')
+    ContentType: Optional[str] = Field(None, description='The content type of the model file.')
 
 
 class CheckJobID(BaseModel):
