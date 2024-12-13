@@ -22,7 +22,7 @@ class Result(BaseModel):
         None,
         description='The document reference for the compliance check being executed',
     )
-    entityId: str = Field(
+    entityIds: str = Field(
         ..., description='The entity Id to which this response is relevant'
     )
     answer: Answer = Field(..., description='The response')

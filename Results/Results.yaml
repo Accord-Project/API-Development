@@ -307,29 +307,16 @@ components:
         operator:
           type: string
           description: The name of the organisation operating this compliance checking microservice
-        capabilities:
+        supportedModelFormats:
           type: array
-          description: A list of the capabilities of the compliance checking microservice
-          items:
-            $ref: '#/components/schemas/CapabilitiesIndex'
-      description: Represents the basic metadata of the server, including an index of its capabilities
-    CapabilitiesIndex:
-      type: object
-      properties:
-        complianceCheckName:
-          type: string
-          description: The name of a compliance check that this microservice is capable of performing
-        entityTypes:
-          type: array
+          description: A list of supported model formats
           items:
             type: string
-          description: A list of entity types i.e. IfcDoor to which the described check can be applied
-        documentReferences:
+        supportedTerms:
           type: array
+          description: A list of the compliance check terms that this compliance checking microservice can answer compliance checks about
           items:
             type: string
-            format: url
-          description: A list of URLs to Building Codes to which the described check can be applied
   securitySchemes:
     auth:
       name: API Key Auth
