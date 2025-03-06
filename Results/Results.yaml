@@ -167,6 +167,9 @@ components:
         supportingFileContentType:
           type: string
           description: The MIME Content Type of the supporting file data (if present)
+        supportingFileData:
+          description: BASE64 Encoded data that supports/evidences this overall check
+          type: string
         results:
           type: array
           description: A list of responses, one item for every object that was requested to be checked upon Check creation
