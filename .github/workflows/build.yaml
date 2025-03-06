@@ -21,7 +21,7 @@ jobs:
       - run: npx @redocly/cli build-docs Data/Data.yaml
       - run: mv redoc-static.html dist/data.html
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         with:
           path: './dist'
       - name: Deploy to GitHub Pages
