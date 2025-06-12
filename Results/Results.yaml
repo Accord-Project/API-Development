@@ -229,6 +229,10 @@ components:
           type: string
           format: url
           description: A Webhook URL that the microservice can call to signify this check is complete.
+        webhookUpload:
+          type: string
+          format: url
+          description: A Webhook URL that the microservice can call to upload any supportingFileData.
     CheckCreateSpecific:
       type: object
       required:
